@@ -25,11 +25,20 @@ const Dashboard = () => {
   const plannedDeliverables = deliverables.filter((d) => d.status === '예정').length;
 
   // 다가오는 마일스톤
-  const today = new Date();
+  const today = new Date('2025-05-15');
   today.setHours(0, 0, 0, 0);
+  const upcomingLimit = new Date(today);
+  upcomingLimit.setDate(today.getDate() + 30);
 
   const upcomingMilestones = milestones
-    .filter((m) => new Date(m.date) >= today || m.status === '진행 중')
+    .filter((m) => {
+      const milestoneDate = new Date(m.date);
+      return (
+        m.status !== '완료' &&
+        milestoneDate >= today &&
+        milestoneDate <= upcomingLimit
+      );
+    })
     .sort((a, b) => new Date(a.date) - new Date(b.date))
     .slice(0, 5);
 

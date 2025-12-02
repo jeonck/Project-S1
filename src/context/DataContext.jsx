@@ -85,7 +85,12 @@ export const DataProvider = ({ children }) => {
         { project: '프로젝트 B', name: '디자인 완료', date: '2025-04-30', status: '예정', description: '앱 UI/UX 디자인 완료' },
         { project: '프로젝트 E', name: '시스템 마이그레이션', date: '2025-02-28', status: '완료', description: '기존 시스템에서 새로운 시스템으로 마이그레이션' },
         { project: '프로젝트 E', name: '사용자 교육', date: '2025-03-15', status: '완료', description: '새로운 시스템 사용법 교육' },
-        { project: '프로젝트 D', name: '아키텍처 설계', date: '2025-12-01', status: '예정', description: '클라우드 아키텍처 설계 및 검증' }
+        { project: '프로젝트 D', name: '아키텍처 설계', date: '2025-12-01', status: '예정', description: '클라우드 아키텍처 설계 및 검증' },
+        // Added for upcoming milestones test
+        { project: '프로젝트 B', name: '알파 테스트', date: '2025-05-20', status: '진행 중', description: '내부 알파 테스트 진행' },
+        { project: '프로젝트 A', name: 'UI 개선', date: '2025-06-10', status: '예정', description: '사용자 피드백 기반 UI 개선' },
+        { project: '프로젝트 C', name: '데이터 전처리', date: '2025-05-25', status: '예정', description: '분석용 데이터 전처리' },
+        { project: '프로젝트 B', name: 'QA 리뷰', date: '2025-05-18', status: '완료', description: 'QA팀의 최종 리뷰' }
       ];
       localStorage.setItem('milestones', JSON.stringify(initialMilestones));
     }
