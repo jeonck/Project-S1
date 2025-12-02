@@ -13,6 +13,7 @@ import Requirements from './pages/Requirements';
 import Guide from './pages/Guide';
 import TeamMembers from './pages/TeamMembers';
 import ResourcePlanner from './pages/ResourcePlanner';
+import Schedule from './pages/Schedule';
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -47,6 +48,7 @@ function App() {
                     <Route path="/guide" element={<Guide />} />
                     <Route path="/teammembers" element={<TeamMembers />} />
                     <Route path="/resourceplanner" element={<ResourcePlanner />} />
+                    <Route path="/schedule" element={<Schedule />} />
                   </Routes>
                 </div>
               </div>
