@@ -6,20 +6,13 @@ const ResourcePlanner = () => {
   const { teamMembers, tasks, projects, updateTask, updateProject } = useData();
   const [currentViewMode, setCurrentViewMode] = useState(ViewMode.Week);
 
-  // Helper to generate a start date based on the end date
-  const getStartDate = (endDate, duration = 30) => {
-    const date = new Date(endDate);
-    date.setDate(date.getDate() - duration);
-    return date.toISOString().split('T')[0];
-  };
-
   const getTeamMemberAssignments = (assigneeName) => {
     const memberTasks = tasks
       .filter(task => task.assignee === assigneeName)
       .map(task => ({
         id: `task-${task.id}`,
         name: `[태스크] ${task.name}`,
-        start: getStartDate(task.dueDate, 7), // Shorter duration for tasks (7 days)
+        start: new Date(new Date(task.dueDate).setDate(new Date(task.dueDate).getDate() - 7)).toISOString().split('T')[0], // Shorter duration for tasks (7 days)
         end: task.dueDate,
         progress: task.status === '완료' ? 100 : Math.floor(Math.random() * 80) + 10,
         custom_class: 'bar-task',
@@ -32,7 +25,7 @@ const ResourcePlanner = () => {
       .map(project => ({
         id: `project-${project.name}`,
         name: `[프로젝트] ${project.name}`,
-        start: getStartDate(project.dueDate, 30), // Longer duration for projects (30 days)
+        start: project.startDate, // Use project's own startDate
         end: project.dueDate,
         progress: project.status === '완료' ? 100 : (project.status === '진행 중' ? 50 : 10),
         custom_class: 'bar-project',

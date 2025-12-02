@@ -54,15 +54,22 @@ export const DataProvider = ({ children }) => {
     }
   }, [teamMembers]);
 
+  const getRandomStartDate = (dueDate) => {
+    const due = new Date(dueDate);
+    const randomDays = Math.floor(Math.random() * 30) + 1; // 1 to 30 days before
+    const startDate = new Date(due.setDate(due.getDate() - randomDays));
+    return startDate.toISOString().split('T')[0];
+  };
+
   const initializeLocalStorage = () => {
     if (!localStorage.getItem('projects')) {
       const initialProjects = [
-        { name: '프로젝트 A', dueDate: '2025-12-31', status: '진행 중', description: '웹 애플리케이션 개발', assignee: '고재환', startDate: '2025-01-01' },
-        { name: '프로젝트 B', dueDate: '2025-06-30', status: '계획', description: '모바일 앱 런칭', assignee: '김기홍', startDate: '2025-01-15' },
-        { name: '프로젝트 C', dueDate: '2025-09-15', status: '진행 중', description: '인공지능 분석 시스템 개발', assignee: '김명현', startDate: '2025-03-01' },
-        { name: '프로젝트 D', dueDate: '2026-02-28', status: '계획', description: '클라우드 서비스 플랫폼 구축', assignee: '김상협', startDate: '' },
-        { name: '프로젝트 E', dueDate: '2025-03-31', status: '완료', description: '사내 그룹웨어 마이그레이션', assignee: '고재환', startDate: '' }
-      ];
+        { name: '프로젝트 A', dueDate: '2025-12-31', status: '진행 중', description: '웹 애플리케이션 개발', assignee: '고재환' },
+        { name: '프로젝트 B', dueDate: '2025-06-30', status: '계획', description: '모바일 앱 런칭', assignee: '김기홍' },
+        { name: '프로젝트 C', dueDate: '2025-09-15', status: '진행 중', description: '인공지능 분석 시스템 개발', assignee: '김명현' },
+        { name: '프로젝트 D', dueDate: '2026-02-28', status: '계획', description: '클라우드 서비스 플랫폼 구축', assignee: '김상협' },
+        { name: '프로젝트 E', dueDate: '2025-03-31', status: '완료', description: '사내 그룹웨어 마이그레이션', assignee: '고재환' }
+      ].map(p => ({ ...p, startDate: getRandomStartDate(p.dueDate) }));
       localStorage.setItem('projects', JSON.stringify(initialProjects));
     }
 
@@ -133,7 +140,7 @@ export const DataProvider = ({ children }) => {
     let loadedTeamMembers = [];
 
     const storedProjects = localStorage.getItem('projects');
-    if (storedProjects) loadedProjects = JSON.parse(storedProjects).map(project => ({ ...project, startDate: project.startDate || '' }));
+    if (storedProjects) loadedProjects = JSON.parse(storedProjects).map(project => ({ ...project, startDate: project.startDate || getRandomStartDate(project.dueDate) }));
 
     const storedMilestones = localStorage.getItem('milestones');
     if (storedMilestones) loadedMilestones = JSON.parse(storedMilestones);
