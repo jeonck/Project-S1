@@ -51,6 +51,7 @@ const ResourcePlanner = () => {
 
   const handleDateChange = (ganttTask, start, end) => {
     const [type, originalIdOrName] = ganttTask.id.split('-');
+    const newStartDate = start.toISOString().split('T')[0];
     const newDueDate = end.toISOString().split('T')[0];
 
     if (type === 'task') {
@@ -63,10 +64,10 @@ const ResourcePlanner = () => {
       const projectName = originalIdOrName;
       const originalProject = projects.find(p => p.name === projectName);
       if (originalProject) {
-        // For projects, we update the dueDate. Start date is inferred.
+        // Update both startDate and dueDate to maintain the duration
         updateProject(
           projects.findIndex(p => p.name === projectName),
-          { ...originalProject, dueDate: newDueDate }
+          { ...originalProject, startDate: newStartDate, dueDate: newDueDate }
         );
       }
     }
