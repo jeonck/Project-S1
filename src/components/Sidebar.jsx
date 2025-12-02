@@ -5,7 +5,7 @@ const Sidebar = ({ isOpen, onClose }) => {
 
   const menuItems = [
     {
-      category: '메인',
+      category: '개요',
       items: [
         {
           path: '/',
@@ -18,35 +18,6 @@ const Sidebar = ({ isOpen, onClose }) => {
             />
           ),
           text: '대시보드',
-        },
-        {
-          path: '/projects',
-          icon: (
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-            />
-          ),
-          text: '프로젝트',
-        },
-      ],
-    },
-    {
-      category: '프로젝트 관리',
-      items: [
-        {
-          path: '/teammembers',
-          icon: (
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.653-.197-1.272-.544-1.802M7 20v-2a3 3 0 015.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M12 10a2 2 0 11-4 0 2 2 0 014 0zm0 0c1.767 0 2.651.884 3.256 1.488S16.29 13 18 13c1.767 0 2.651.884 3.256 1.488S22.29 16 24 16m-4-6a2 2 0 11-4 0 2 2 0 014 0z"
-            />
-          ),
-          text: '팀원 관리',
         },
         {
           path: '/resourceplanner',
@@ -63,19 +34,31 @@ const Sidebar = ({ isOpen, onClose }) => {
       ],
     },
     {
-      category: '지원',
+      category: '작업 관리',
       items: [
         {
-          path: '/tasks',
+          path: '/projects',
           icon: (
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth="2"
-              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2M9 19l3-3m0 0l3 3m-3-3v8"
+              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
             />
           ),
-          text: '태스크',
+          text: '프로젝트',
+        },
+        {
+          path: '/requirements',
+          icon: (
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+            />
+          ),
+          text: '요구사항 관리',
         },
         {
           path: '/milestones',
@@ -90,6 +73,18 @@ const Sidebar = ({ isOpen, onClose }) => {
           text: '마일스톤',
         },
         {
+          path: '/tasks',
+          icon: (
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2M9 19l3-3m0 0l3 3m-3-3v8"
+            />
+          ),
+          text: '태스크',
+        },
+        {
           path: '/deliverables',
           icon: (
             <path
@@ -101,17 +96,22 @@ const Sidebar = ({ isOpen, onClose }) => {
           ),
           text: '산출물',
         },
+      ],
+    },
+    {
+      category: '설정',
+      items: [
         {
-          path: '/requirements',
+          path: '/teammembers',
           icon: (
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth="2"
-              d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.653-.197-1.272-.544-1.802M7 20v-2a3 3 0 015.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M12 10a2 2 0 11-4 0 2 2 0 014 0zm0 0c1.767 0 2.651.884 3.256 1.488S16.29 13 18 13c1.767 0 2.651.884 3.256 1.488S22.29 16 24 16m-4-6a2 2 0 11-4 0 2 2 0 014 0z"
             />
           ),
-          text: '요구사항 관리',
+          text: '팀원 관리',
         },
         {
           path: '/guide',
