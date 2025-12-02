@@ -24,11 +24,11 @@ const Dashboard = () => {
   const progressDeliverables = deliverables.filter((d) => d.status === '진행 중').length;
   const plannedDeliverables = deliverables.filter((d) => d.status === '예정').length;
 
-  // 다가오는 마일스톤
+  // 다가오는 마일스톤 (6개월)
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const upcomingLimit = new Date(today);
-  upcomingLimit.setDate(today.getDate() + 30);
+  upcomingLimit.setMonth(today.getMonth() + 6);
 
   const upcomingMilestones = milestones
     .filter((m) => {
@@ -39,8 +39,19 @@ const Dashboard = () => {
         milestoneDate <= upcomingLimit
       );
     })
-    .sort((a, b) => new Date(a.date) - new Date(b.date))
-    .slice(0, 5);
+    .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+  // 다가오는 프로젝트 (6개월)
+  const upcomingProjects = projects
+    .filter((p) => {
+      const projectDueDate = new Date(p.dueDate);
+      return (
+        p.status !== '완료' &&
+        projectDueDate >= today &&
+        projectDueDate <= upcomingLimit
+      );
+    })
+    .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
 
   return (
     <div className="p-6">
@@ -117,9 +128,72 @@ const Dashboard = () => {
         </div>
       </div>
 
+      {/* 다가오는 프로젝트 섹션 */}
+      <div className="mt-8">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">다가오는 프로젝트 (향후 6개월)</h2>
+        <div className="bg-white rounded-md shadow-sm border border-gray-100 overflow-hidden">
+          <table className="min-w-full divide-y divide-gray-200 table-fixed">
+            <thead className="bg-gray-50">
+              <tr>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/4"
+                >
+                  프로젝트명
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/4"
+                >
+                  담당자
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/4"
+                >
+                  마감일
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/4"
+                >
+                  상태
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {upcomingProjects.length > 0 ? (
+                upcomingProjects.map((project, index) => (
+                  <tr key={index} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 w-1/4">
+                      {project.name}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 w-1/4">
+                      {project.assignee}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/4">
+                      {formatDate(project.dueDate)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm w-1/4">
+                      <StatusBadge status={project.status} />
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="4" className="px-6 py-4 text-center text-gray-500">
+                    다가오는 프로젝트가 없습니다
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       {/* 다가오는 마일스톤 섹션 */}
       <div className="mt-8">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">다가오는 마일스톤</h2>
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">다가오는 마일스톤 (향후 6개월)</h2>
         <div className="bg-white rounded-md shadow-sm border border-gray-100 overflow-hidden">
           <table className="min-w-full divide-y divide-gray-200 table-fixed">
             <thead className="bg-gray-50">

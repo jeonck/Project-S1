@@ -188,6 +188,19 @@ export const DataProvider = ({ children }) => {
       });
     }
 
+    // Update dynamic milestone dates (프로젝트 F 시장 분석 보고서)
+    const today = new Date();
+    const upcomingDate = new Date(today);
+    upcomingDate.setDate(today.getDate() + 15);
+    const dynamicDateStr = upcomingDate.toISOString().split('T')[0];
+
+    loadedMilestones = loadedMilestones.map(milestone => {
+      if (milestone.project === '프로젝트 F' && milestone.name === '시장 분석 보고서') {
+        return { ...milestone, date: dynamicDateStr };
+      }
+      return milestone;
+    });
+
     // Update states
     setProjects(loadedProjects);
     setMilestones(loadedMilestones);
