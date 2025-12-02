@@ -69,7 +69,8 @@ export const DataProvider = ({ children }) => {
         { name: '프로젝트 C', dueDate: '2025-09-15', status: '진행 중', description: '인공지능 분석 시스템 개발', assignee: '김명현' },
         { name: '프로젝트 D', dueDate: '2026-02-28', status: '계획', description: '클라우드 서비스 플랫폼 구축', assignee: '김상협' },
         { name: '프로젝트 E', dueDate: '2025-03-31', status: '완료', description: '사내 그룹웨어 마이그레이션', assignee: '고재환' },
-        { name: '프로젝트 F', dueDate: '2026-06-30', status: '계획', description: '새로운 서비스 런칭 준비', assignee: '김기홍' }
+        { name: '프로젝트 F', dueDate: '2026-06-30', status: '계획', description: '새로운 서비스 런칭 준비', assignee: '김기홍' },
+        { name: '프로젝트 G', dueDate: '2026-08-31', status: '계획', description: '신규 고객사 온보딩', assignee: '고재환' }
       ].map(p => ({ ...p, startDate: getRandomStartDate(p.dueDate) }));
       localStorage.setItem('projects', JSON.stringify(initialProjects));
     }
