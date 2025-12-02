@@ -90,7 +90,8 @@ export const DataProvider = ({ children }) => {
         { project: '프로젝트 B', name: '알파 테스트', date: '2025-05-20', status: '진행 중', description: '내부 알파 테스트 진행' },
         { project: '프로젝트 A', name: 'UI 개선', date: '2025-06-10', status: '예정', description: '사용자 피드백 기반 UI 개선' },
         { project: '프로젝트 C', name: '데이터 전처리', date: '2025-05-25', status: '예정', description: '분석용 데이터 전처리' },
-        { project: '프로젝트 B', name: 'QA 리뷰', date: '2025-05-18', status: '완료', description: 'QA팀의 최종 리뷰' }
+        { project: '프로젝트 B', name: 'QA 리뷰', date: '2025-05-18', status: '완료', description: 'QA팀의 최종 리뷰' },
+        { project: '프로젝트 A', name: '최종 보고서 제출', date: '2025-12-19', status: '예정', description: '프로젝트 최종 보고서 제출' }
       ];
       localStorage.setItem('milestones', JSON.stringify(initialMilestones));
     }
