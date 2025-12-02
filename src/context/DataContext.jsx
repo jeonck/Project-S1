@@ -70,7 +70,8 @@ export const DataProvider = ({ children }) => {
         { name: '프로젝트 D', dueDate: '2026-02-28', status: '계획', description: '클라우드 서비스 플랫폼 구축', assignee: '김상협' },
         { name: '프로젝트 E', dueDate: '2025-03-31', status: '완료', description: '사내 그룹웨어 마이그레이션', assignee: '고재환' },
         { name: '프로젝트 F', dueDate: '2026-06-30', status: '계획', description: '새로운 서비스 런칭 준비', assignee: '김기홍' },
-        { name: '프로젝트 G', dueDate: '2026-08-31', status: '계획', description: '신규 고객사 온보딩', assignee: '고재환' }
+        { name: '프로젝트 G', dueDate: '2026-08-31', status: '계획', description: '신규 고객사 온보딩', assignee: '고재환' },
+        { name: '프로젝트 H', dueDate: '2026-04-30', status: '계획', description: '기술 부채 해결', assignee: '최수석' }
       ].map(p => ({ ...p, startDate: getRandomStartDate(p.dueDate) }));
       localStorage.setItem('projects', JSON.stringify(initialProjects));
     }
@@ -148,6 +149,7 @@ export const DataProvider = ({ children }) => {
         { id: 'tm6', name: '김선미', department: '1카미노감리', role: '수석' },
         { id: 'tm7', name: '김연식', department: '1카미노감리', role: '수석' },
         { id: 'tm8', name: '김영빈', department: '1카미노감리', role: '수석' },
+        { id: 'tm9', name: '최수석', department: '1카미노감리', role: '수석' },
       ];
       localStorage.setItem('teamMembers', JSON.stringify(initialTeamMembers));
     }
