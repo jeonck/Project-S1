@@ -25,7 +25,7 @@ const Dashboard = () => {
   const plannedDeliverables = deliverables.filter((d) => d.status === '예정').length;
 
   // 다가오는 마일스톤
-  const today = new Date('2025-05-15');
+  const today = new Date();
   today.setHours(0, 0, 0, 0);
   const upcomingLimit = new Date(today);
   upcomingLimit.setDate(today.getDate() + 30);
