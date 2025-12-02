@@ -140,30 +140,8 @@ const ResourcePlanner = () => {
         }
       `}</style>
 
-      <div className="relative">
-        <div className="absolute top-0 right-0 bg-white p-3 rounded-lg shadow-md border border-gray-200 z-10">
-          <h3 className="text-sm font-semibold mb-2">범례 (Legend)</h3>
-          <div className="space-y-2">
-            <div className="flex items-center">
-              <span className="w-4 h-4 rounded-sm mr-2" style={{ backgroundColor: '#4f46e5' }}></span>
-              <span className="text-xs text-gray-600">진행 중 (In Progress)</span>
-            </div>
-            <div className="flex items-center">
-              <span className="w-4 h-4 rounded-sm mr-2" style={{ backgroundColor: '#10b981' }}></span>
-              <span className="text-xs text-gray-600">완료 (Completed)</span>
-            </div>
-            <div className="flex items-center">
-              <span className="w-4 h-4 rounded-sm mr-2" style={{ backgroundColor: '#f59e0b' }}></span>
-              <span className="text-xs text-gray-600">계획 (Planned)</span>
-            </div>
-            <div className="flex items-center">
-              <span className="w-4 h-4 rounded-sm mr-2" style={{ backgroundColor: '#60a5fa' }}></span>
-              <span className="text-xs text-gray-600">태스크 (Task)</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="mb-4 flex space-x-2">
+      <div className="flex justify-between items-start mb-4">
+        <div className="flex space-x-2">
           <button
             onClick={() => handleViewModeChange(ViewMode.Day)}
             className={`px-4 py-2 rounded-lg text-sm font-medium ${currentViewMode === ViewMode.Day ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
@@ -184,38 +162,60 @@ const ResourcePlanner = () => {
           </button>
         </div>
 
-        <div className="space-y-8">
-          {teamMembers.map(member => {
-            const memberAssignments = getTeamMemberAssignments(member.name);
-            return (
-              <div key={member.id} className="bg-white shadow-lg rounded-lg p-6">
-                <h2 className="text-xl font-semibold text-gray-700 mb-4">{member.name} ({member.department} - {member.role})</h2>
-                {memberAssignments.length > 0 ? (
-                  <Gantt
-                    tasks={memberAssignments}
-                    viewMode={currentViewMode}
-                    onDateChange={handleDateChange}
-                    onProgressChange={handleProgressChange}
-                    customPopupHtml={(ganttTask) => `
-                      <div class="p-2">
-                        <h4 class="font-bold">${ganttTask.name}</h4>
-                        <p>기간: ${ganttTask.start} ~ ${ganttTask.end}</p>
-                        <p>진행률: ${ganttTask.progress}%</p>
-                      </div>
-                    `}
-                  />
-                ) : (
-                  <p className="text-gray-500">할당된 작업이 없습니다.</p>
-                )}
-              </div>
-            );
-          })}
-          {teamMembers.length === 0 && (
-            <div className="bg-white shadow-lg rounded-lg p-6">
-              <p className="text-center text-gray-500">등록된 팀원이 없습니다.</p>
+        <div className="bg-white p-3 rounded-lg shadow-md border border-gray-200">
+          <h3 className="text-sm font-semibold mb-2">범례 (Legend)</h3>
+          <div className="space-y-2">
+            <div className="flex items-center">
+              <span className="w-4 h-4 rounded-sm mr-2" style={{ backgroundColor: '#4f46e5' }}></span>
+              <span className="text-xs text-gray-600">진행 중 (In Progress)</span>
             </div>
-          )}
+            <div className="flex items-center">
+              <span className="w-4 h-4 rounded-sm mr-2" style={{ backgroundColor: '#10b981' }}></span>
+              <span className="text-xs text-gray-600">완료 (Completed)</span>
+            </div>
+            <div className="flex items-center">
+              <span className="w-4 h-4 rounded-sm mr-2" style={{ backgroundColor: '#f59e0b' }}></span>
+              <span className="text-xs text-gray-600">계획 (Planned)</span>
+            </div>
+            <div className="flex items-center">
+              <span className="w-4 h-4 rounded-sm mr-2" style={{ backgroundColor: '#60a5fa' }}></span>
+              <span className="text-xs text-gray-600">태스크 (Task)</span>
+            </div>
+          </div>
         </div>
+      </div>
+
+      <div className="space-y-8">
+        {teamMembers.map(member => {
+          const memberAssignments = getTeamMemberAssignments(member.name);
+          return (
+            <div key={member.id} className="bg-white shadow-lg rounded-lg p-6">
+              <h2 className="text-xl font-semibold text-gray-700 mb-4">{member.name} ({member.department} - {member.role})</h2>
+              {memberAssignments.length > 0 ? (
+                <Gantt
+                  tasks={memberAssignments}
+                  viewMode={currentViewMode}
+                  onDateChange={handleDateChange}
+                  onProgressChange={handleProgressChange}
+                  customPopupHtml={(ganttTask) => `
+                    <div class="p-2">
+                      <h4 class="font-bold">${ganttTask.name}</h4>
+                      <p>기간: ${ganttTask.start} ~ ${ganttTask.end}</p>
+                      <p>진행률: ${ganttTask.progress}%</p>
+                    </div>
+                  `}
+                />
+              ) : (
+                <p className="text-gray-500">할당된 작업이 없습니다.</p>
+              )}
+            </div>
+          );
+        })}
+        {teamMembers.length === 0 && (
+          <div className="bg-white shadow-lg rounded-lg p-6">
+            <p className="text-center text-gray-500">등록된 팀원이 없습니다.</p>
+          </div>
+        )}
       </div>
     </div>
   );
