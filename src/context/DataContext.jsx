@@ -68,7 +68,8 @@ export const DataProvider = ({ children }) => {
         { name: '프로젝트 B', dueDate: '2025-06-30', status: '계획', description: '모바일 앱 런칭', assignee: '김기홍' },
         { name: '프로젝트 C', dueDate: '2025-09-15', status: '진행 중', description: '인공지능 분석 시스템 개발', assignee: '김명현' },
         { name: '프로젝트 D', dueDate: '2026-02-28', status: '계획', description: '클라우드 서비스 플랫폼 구축', assignee: '김상협' },
-        { name: '프로젝트 E', dueDate: '2025-03-31', status: '완료', description: '사내 그룹웨어 마이그레이션', assignee: '고재환' }
+        { name: '프로젝트 E', dueDate: '2025-03-31', status: '완료', description: '사내 그룹웨어 마이그레이션', assignee: '고재환' },
+        { name: '프로젝트 F', dueDate: '2026-06-30', status: '계획', description: '새로운 서비스 런칭 준비', assignee: '김기홍' }
       ].map(p => ({ ...p, startDate: getRandomStartDate(p.dueDate) }));
       localStorage.setItem('projects', JSON.stringify(initialProjects));
     }
@@ -91,7 +92,20 @@ export const DataProvider = ({ children }) => {
         { project: '프로젝트 A', name: 'UI 개선', date: '2025-06-10', status: '예정', description: '사용자 피드백 기반 UI 개선' },
         { project: '프로젝트 C', name: '데이터 전처리', date: '2025-05-25', status: '예정', description: '분석용 데이터 전처리' },
         { project: '프로젝트 B', name: 'QA 리뷰', date: '2025-05-18', status: '완료', description: 'QA팀의 최종 리뷰' },
-        { project: '프로젝트 A', name: '최종 보고서 제출', date: '2025-12-19', status: '예정', description: '프로젝트 최종 보고서 제출' }
+        { project: '프로젝트 A', name: '최종 보고서 제출', date: '2025-12-19', status: '예정', description: '프로젝트 최종 보고서 제출' },
+        // Added for guaranteed upcoming milestone
+        { 
+          project: '프로젝트 F', 
+          name: '시장 분석 보고서', 
+          date: (() => {
+            const today = new Date();
+            const upcomingDate = new Date(today);
+            upcomingDate.setDate(today.getDate() + 15);
+            return upcomingDate.toISOString().split('T')[0];
+          })(), 
+          status: '예정', 
+          description: '신규 서비스 시장 분석 완료' 
+        }
       ];
       localStorage.setItem('milestones', JSON.stringify(initialMilestones));
     }
