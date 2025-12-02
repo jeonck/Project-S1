@@ -6,6 +6,19 @@ const ResourcePlanner = () => {
   const { teamMembers, tasks, projects, updateTask, updateProject } = useData();
   const [currentViewMode, setCurrentViewMode] = useState(ViewMode.Week);
 
+  const getProjectBarClass = (status) => {
+    switch (status) {
+      case '진행 중':
+        return 'bar-project-progress';
+      case '완료':
+        return 'bar-project-completed';
+      case '계획':
+        return 'bar-project-planned';
+      default:
+        return 'bar-project-planned';
+    }
+  };
+
   const getTeamMemberAssignments = (assigneeName) => {
     const memberTasks = tasks
       .filter(task => task.assignee === assigneeName)
@@ -28,7 +41,7 @@ const ResourcePlanner = () => {
         start: project.startDate, // Use project's own startDate
         end: project.dueDate,
         progress: project.status === '완료' ? 100 : (project.status === '진행 중' ? 50 : 10),
-        custom_class: 'bar-project',
+        custom_class: getProjectBarClass(project.status),
         type: 'project', // Custom property to identify type
         originalName: project.name, // Use original name to find in projects array
       }));
@@ -113,8 +126,14 @@ const ResourcePlanner = () => {
         .gantt .bar-task .bar {
           fill: #60a5fa; /* Blue for tasks */
         }
-        .gantt .bar-project .bar {
-          fill: #a78bfa; /* Purple for projects */
+        .gantt .bar-project-progress .bar {
+          fill: #4f46e5; /* Indigo for 'in progress' */
+        }
+        .gantt .bar-project-completed .bar {
+          fill: #10b981; /* Green for 'completed' */
+        }
+        .gantt .bar-project-planned .bar {
+          fill: #f59e0b; /* Amber for 'planned' */
         }
         .gantt .bar-progress {
           fill: rgba(0, 0, 0, 0.25);
