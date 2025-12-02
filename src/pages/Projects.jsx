@@ -14,6 +14,7 @@ const Projects = () => {
     status: '계획',
     description: '',
     assignee: '',
+    startDate: '', // Added startDate
   });
 
   const formatDate = (dateString) => {
@@ -35,6 +36,7 @@ const Projects = () => {
         status: '계획',
         description: '',
         assignee: teamMembers.length > 0 ? teamMembers[0].name : '',
+        startDate: '', // Initialize startDate for new projects
       });
     }
     setIsModalOpen(true);
@@ -98,6 +100,9 @@ const Projects = () => {
                 담당자
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                시작일
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 마감일
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -116,6 +121,9 @@ const Projects = () => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {project.assignee}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {project.startDate ? formatDate(project.startDate) : 'N/A'}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {formatDate(project.dueDate)}
@@ -180,6 +188,19 @@ const Projects = () => {
                 </option>
               ))}
             </select>
+          </div>
+          <div className="mb-4">
+            <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 mb-1">
+              시작일
+            </label>
+            <input
+              type="date"
+              id="startDate"
+              value={formData.startDate}
+              onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+              className="w-full border border-gray-300 p-2 rounded-md focus:border-blue-600 focus:outline-none"
+              required
+            />
           </div>
           <div className="mb-4">
             <label htmlFor="dueDate" className="block text-sm font-medium text-gray-700 mb-1">
