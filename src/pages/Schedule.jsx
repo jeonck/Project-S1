@@ -3,7 +3,7 @@ import { getWeek, startOfWeek, endOfWeek, format } from 'date-fns';
 import { useState } from 'react';
 
 const Schedule = () => {
-  const { teamMembers, projects } = useData();
+  const { teamMembers, projects, tasks } = useData();
   const [selectedYear, setSelectedYear] = useState(2025);
 
   // Generate years from 2025 to 2035
@@ -80,7 +80,7 @@ const Schedule = () => {
 
     const projectStart = new Date(project.startDate);
     const projectEnd = new Date(project.dueDate);
-    
+
     // The getWeek function is ISO 8601 compliant (week starts on Monday)
     const startWeek = getWeek(projectStart, { weekStartsOn: 1 });
     const endWeek = getWeek(projectEnd, { weekStartsOn: 1 });
@@ -101,6 +101,38 @@ const Schedule = () => {
       return week <= endWeek;
     }
     return true; // Spans the whole year
+  };
+
+  // Check if a task is active in a given week of a year
+  const isTaskActive = (task, week, year) => {
+    if (!task.dueDate) {
+      return false;
+    }
+
+    const taskEnd = new Date(task.dueDate);
+    // Assume task starts 7 days before due date (same as ResourcePlanner)
+    const taskStart = new Date(taskEnd);
+    taskStart.setDate(taskStart.getDate() - 7);
+
+    const startWeek = getWeek(taskStart, { weekStartsOn: 1 });
+    const endWeek = getWeek(taskEnd, { weekStartsOn: 1 });
+
+    const startYear = taskStart.getFullYear();
+    const endYear = taskEnd.getFullYear();
+
+    if (year < startYear || year > endYear) {
+      return false;
+    }
+    if (year === startYear && year === endYear) {
+      return week >= startWeek && week <= endWeek;
+    }
+    if (year === startYear) {
+      return week >= startWeek;
+    }
+    if (year === endYear) {
+      return week <= endWeek;
+    }
+    return true;
   };
 
   return (
@@ -172,19 +204,34 @@ const Schedule = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {teamMembers.map((member) => (
+            {teamMembers.map((member) => {
+              // Debug logging for 고재환
+              if (member.name === '고재환') {
+                const memberProjects = projects.filter(p => p.assignee === member.name);
+                const memberTasks = tasks.filter(t => t.assignee === member.name);
+                console.log('고재환 Projects:', memberProjects);
+                console.log('고재환 Tasks:', memberTasks);
+                console.log('Selected Year:', selectedYear);
+              }
+              return (
               <tr key={member.id}>
                 <td className="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900 sticky left-0 bg-white z-10 w-32">
                   {member.name}
                 </td>
                 {weeks.map((week) => {
                   const activeProjects = projects.filter(p => p.assignee === member.name && isProjectActive(p, week, selectedYear));
+                  const activeTasks = tasks.filter(t => t.assignee === member.name && isTaskActive(t, week, selectedYear));
                   return (
                     <td key={week} className="px-1 py-1 whitespace-nowrap text-xs border-l border-gray-200 h-full">
                       <div className="h-full flex flex-col items-center justify-center space-y-1">
                         {activeProjects.map(p => (
-                           <div key={p.name} title={p.name} className="w-full bg-indigo-200 text-indigo-800 rounded-sm px-1 truncate">
+                           <div key={`project-${p.name}`} title={`[프로젝트] ${p.name}`} className="w-full bg-indigo-200 text-indigo-800 rounded-sm px-1 truncate">
                              {p.name}
+                           </div>
+                        ))}
+                        {activeTasks.map(t => (
+                           <div key={`task-${t.id}`} title={`[태스크] ${t.name}`} className="w-full bg-blue-200 text-blue-800 rounded-sm px-1 truncate">
+                             {t.name}
                            </div>
                         ))}
                       </div>
@@ -192,7 +239,8 @@ const Schedule = () => {
                   );
                 })}
               </tr>
-            ))}
+              );
+            })}
             {teamMembers.length === 0 && (
               <tr>
                 <td colSpan={weeks.length + 1} className="px-6 py-4 text-center text-gray-500">
