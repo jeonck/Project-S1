@@ -63,7 +63,7 @@ export const DataProvider = ({ children }) => {
 
   const initializeLocalStorage = () => {
     // 데이터 버전 관리 - 버전이 다르면 tasks를 재초기화
-    const DATA_VERSION = '2.5'; // 3단계 감리 점검 태스크 세분화
+    const DATA_VERSION = '2.6'; // 초기 데이터 오탈자 수정
     const currentVersion = localStorage.getItem('dataVersion');
 
     if (currentVersion !== DATA_VERSION) {
@@ -153,7 +153,7 @@ export const DataProvider = ({ children }) => {
         // 종료 단계 감리 점검태스크
         { id: 11, name: '시스템 테스트 및 품질', project: '프로젝트 A', dueDate: '2025-07-05', status: '예정', assignee: '김상협', description: '프로젝트 A 시스템 테스트 및 품질 감리', milestoneId: 5 },
         { id: 12, name: '산출물 및 인수인계', project: '프로젝트 A', dueDate: '2025-08-01', status: '계획', assignee: '김기홍', description: '프로젝트 A 산출물 및 인수인계 감리', milestoneId: 5 },
-        { id: 13, name: '가어 내용 이행 여부', project: '프로젝트 C', dueDate: '2025-09-01', status: '예정', assignee: '김기홍', description: '프로젝트 C 가어 내용 이행 여부 감리', milestoneId: 6 },
+        { id: 13, name: '과업 내용 이행 여부', project: '프로젝트 C', dueDate: '2025-09-01', status: '예정', assignee: '김기홍', description: '프로젝트 C 과업 내용 이행 여부 감리', milestoneId: 6 },
         { id: 14, name: '시스템 운영 준비', project: '프로젝트 E', dueDate: '2025-03-20', status: '완료', assignee: '고재환', description: '프로젝트 E 시스템 운영 준비 감리', milestoneId: 9 },
         { id: 15, name: '시정조치 확인', project: '프로젝트 E', dueDate: '2025-03-25', status: '완료', assignee: '고재환', description: '프로젝트 E 시정조치 확인 감리', milestoneId: 10 },
       ];
