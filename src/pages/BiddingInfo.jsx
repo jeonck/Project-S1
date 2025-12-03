@@ -1,15 +1,13 @@
 import { useState, useEffect } from 'react';
-import StatusBadge from '../components/StatusBadge';
 
 const BiddingInfo = () => {
   const [biddingData, setBiddingData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState('service'); // service, goods, construction, etc
   const [searchParams, setSearchParams] = useState({
     numOfRows: '10',
     pageNo: '1',
-    inqryDiv: '1', // 1: 공고일시, 2: 입찰마감일시
+    inqryDiv: '1', // 1: 등록일시, 2: 입찰공고번호, 3: 변경일시
     inqryBgnDt: '', // YYYYMMDDHHMM 형식
     inqryEndDt: '' // YYYYMMDDHHMM 형식
   });
@@ -33,23 +31,9 @@ const BiddingInfo = () => {
     };
   };
 
-  const API_KEY = import.meta.env.VITE_PROCUREMENT_API_KEY;
-  const BASE_URL = 'https://apis.data.go.kr/1230000/ao/PrvtBidNtceService';
-
-  // 카테고리별 엔드포인트
-  const endpoints = {
-    service: '/getPrvtBidPblancListInfoServc', // 용역
-    goods: '/getPrvtBidPblancListInfoThng', // 물품
-    construction: '/getPrvtBidPblancListInfoCnstwk', // 공사
-    etc: '/getPrvtBidPblancListInfoEtc' // 기타
-  };
-
-  const categoryNames = {
-    service: '용역',
-    goods: '물품',
-    construction: '공사',
-    etc: '기타'
-  };
+  const API_KEY = 'm/kMIZWbdINXLJBty7vYEUnARJSXEoVJnwDULZlLDHIOVF4byNSTH1RIVv/ag8S0QsNujnoRppEleapTI2ldcg==';
+  const BASE_URL = 'https://apis.data.go.kr/1230000/ad/BidPublicInfoService';
+  const ENDPOINT = '/getBidPblancListInfoServc';
 
   useEffect(() => {
     // 초기 날짜 범위 설정
@@ -61,12 +45,10 @@ const BiddingInfo = () => {
   }, []);
 
   useEffect(() => {
-    if (API_KEY && searchParams.inqryBgnDt && searchParams.inqryEndDt) {
+    if (searchParams.inqryBgnDt && searchParams.inqryEndDt) {
       fetchBiddingData();
-    } else if (!API_KEY) {
-      setError('API 키가 설정되지 않았습니다. .env 파일을 확인하세요.');
     }
-  }, [selectedCategory, searchParams.pageNo, searchParams.inqryBgnDt, searchParams.inqryEndDt]);
+  }, [searchParams.pageNo, searchParams.inqryBgnDt, searchParams.inqryEndDt]);
 
   // XML 파싱 함수
   const parseXML = (xmlString) => {
@@ -91,57 +73,89 @@ const BiddingInfo = () => {
     for (let i = 0; i < itemElements.length; i++) {
       const item = itemElements[i];
 
-      // 업종코드 추출 (servcDtlList에서 파싱)
-      const servcDtlList = getTextContent(item, 'servcDtlList');
-      let indstryCode = '';
-
-      // servcDtlList 형식: [1^블록히팅배관 설치사업^충청북도 진천군 덕산면 두촌리 일대^2016-09-30^업종코드]
-      // 또는 다른 필드에서 업종코드를 찾을 수 있음
-      if (servcDtlList) {
-        const parts = servcDtlList.split('^');
-        if (parts.length >= 5) {
-          indstryCode = parts[4]; // 5번째 요소가 업종코드일 가능성
-        }
-      }
-
       const itemData = {
         bidNtceNo: getTextContent(item, 'bidNtceNo'),
         bidNtceOrd: getTextContent(item, 'bidNtceOrd'),
-        bidNtceClsfc: getTextContent(item, 'bidNtceClsfc'),
-        nticeDt: getTextContent(item, 'nticeDt'),
+        reNtceYn: getTextContent(item, 'reNtceYn'),
+        rgstTyNm: getTextContent(item, 'rgstTyNm'),
+        ntceKindNm: getTextContent(item, 'ntceKindNm'),
+        intrbidYn: getTextContent(item, 'intrbidYn'),
+        bidNtceDt: getTextContent(item, 'bidNtceDt'),
         refNo: getTextContent(item, 'refNo'),
-        ntceNm: getTextContent(item, 'ntceNm'),
-        ntceDivNm: getTextContent(item, 'ntceDivNm'),
+        bidNtceNm: getTextContent(item, 'bidNtceNm'),
+        ntceInsttCd: getTextContent(item, 'ntceInsttCd'),
         ntceInsttNm: getTextContent(item, 'ntceInsttNm'),
+        dminsttCd: getTextContent(item, 'dminsttCd'),
+        dminsttNm: getTextContent(item, 'dminsttNm'),
         bidMethdNm: getTextContent(item, 'bidMethdNm'),
-        cntrctMthdNm: getTextContent(item, 'cntrctMthdNm'),
-        sucsfbidMthdNm: getTextContent(item, 'sucsfbidMthdNm'),
-        rbidDivNm: getTextContent(item, 'rbidDivNm'),
-        bidQlfctNm: getTextContent(item, 'bidQlfctNm'),
-        ofclNm: getTextContent(item, 'ofclNm'),
-        ofclTelNo: getTextContent(item, 'ofclTelNo'),
-        ofclEmail: getTextContent(item, 'ofclEmail'),
+        cntrctCnclsMthdNm: getTextContent(item, 'cntrctCnclsMthdNm'),
+        ntceInsttOfclNm: getTextContent(item, 'ntceInsttOfclNm'),
+        ntceInsttOfclTelNo: getTextContent(item, 'ntceInsttOfclTelNo'),
+        ntceInsttOfclEmailAdrs: getTextContent(item, 'ntceInsttOfclEmailAdrs'),
+        exctvNm: getTextContent(item, 'exctvNm'),
+        bidQlfctRgstDt: getTextContent(item, 'bidQlfctRgstDt'),
+        cmmnSpldmdAgrmntRcptdocMethd: getTextContent(item, 'cmmnSpldmdAgrmntRcptdocMethd'),
+        cmmnSpldmdAgrmntClseDt: getTextContent(item, 'cmmnSpldmdAgrmntClseDt'),
+        cmmnSpldmdCorpRgnLmtYn: getTextContent(item, 'cmmnSpldmdCorpRgnLmtYn'),
         bidBeginDt: getTextContent(item, 'bidBeginDt'),
         bidClseDt: getTextContent(item, 'bidClseDt'),
         opengDt: getTextContent(item, 'opengDt'),
-        opengPlce: getTextContent(item, 'opengPlce'),
-        refAmt: getTextContent(item, 'refAmt'),
         asignBdgtAmt: getTextContent(item, 'asignBdgtAmt'),
+        presmptPrce: getTextContent(item, 'presmptPrce'),
+        opengPlce: getTextContent(item, 'opengPlce'),
+        dcmtgOprtnDt: getTextContent(item, 'dcmtgOprtnDt'),
+        dcmtgOprtnPlce: getTextContent(item, 'dcmtgOprtnPlce'),
+        bidNtceDtlUrl: getTextContent(item, 'bidNtceDtlUrl'),
+        bidNtceUrl: getTextContent(item, 'bidNtceUrl'),
+        bidPrtcptFeePaymntYn: getTextContent(item, 'bidPrtcptFeePaymntYn'),
+        bidPrtcptFee: getTextContent(item, 'bidPrtcptFee'),
+        bidGrntymnyPaymntYn: getTextContent(item, 'bidGrntymnyPaymntYn'),
+        crdtrNm: getTextContent(item, 'crdtrNm'),
+        ppswGnrlSrvceYn: getTextContent(item, 'ppswGnrlSrvceYn'),
+        srvceDivNm: getTextContent(item, 'srvceDivNm'),
+        prdctClsfcLmtYn: getTextContent(item, 'prdctClsfcLmtYn'),
+        mnfctYn: getTextContent(item, 'mnfctYn'),
+        purchsObjPrdctList: getTextContent(item, 'purchsObjPrdctList'),
+        untyNtceNo: getTextContent(item, 'untyNtceNo'),
+        cmmnSpldmdMethdCd: getTextContent(item, 'cmmnSpldmdMethdCd'),
+        cmmnSpldmdMethdNm: getTextContent(item, 'cmmnSpldmdMethdNm'),
+        stdNtceDocUrl: getTextContent(item, 'stdNtceDocUrl'),
+        brffcBidprcPermsnYn: getTextContent(item, 'brffcBidprcPermsnYn'),
+        dsgntCmptYn: getTextContent(item, 'dsgntCmptYn'),
+        arsltCmptYn: getTextContent(item, 'arsltCmptYn'),
+        pqEvalYn: getTextContent(item, 'pqEvalYn'),
+        tpEvalYn: getTextContent(item, 'tpEvalYn'),
+        ntceDscrptYn: getTextContent(item, 'ntceDscrptYn'),
+        rsrvtnPrceReMkngMthdNm: getTextContent(item, 'rsrvtnPrceReMkngMthdNm'),
+        arsltApplDocRcptMthdNm: getTextContent(item, 'arsltApplDocRcptMthdNm'),
+        arsltReqstdocRcptDt: getTextContent(item, 'arsltReqstdocRcptDt'),
+        orderPlanUntyNo: getTextContent(item, 'orderPlanUntyNo'),
+        sucsfbidLwltRate: getTextContent(item, 'sucsfbidLwltRate'),
         rgstDt: getTextContent(item, 'rgstDt'),
-        servcDtlList: servcDtlList,
-        indstryCode: indstryCode
+        bfSpecRgstNo: getTextContent(item, 'bfSpecRgstNo'),
+        infoBizYn: getTextContent(item, 'infoBizYn'),
+        sucsfbidMthdCd: getTextContent(item, 'sucsfbidMthdCd'),
+        sucsfbidMthdNm: getTextContent(item, 'sucsfbidMthdNm'),
+        chgDt: getTextContent(item, 'chgDt'),
+        dminsttOfclEmailAdrs: getTextContent(item, 'dminsttOfclEmailAdrs'),
+        indstrytyLmtYn: getTextContent(item, 'indstrytyLmtYn'),
+        chgNtceRsn: getTextContent(item, 'chgNtceRsn'),
+        rbidOpengDt: getTextContent(item, 'rbidOpengDt'),
+        VAT: getTextContent(item, 'VAT'),
+        indutyVAT: getTextContent(item, 'indutyVAT'),
+        pubPrcrmntLrgClsfcNm: getTextContent(item, 'pubPrcrmntLrgClsfcNm'),
+        pubPrcrmntMidClsfcNm: getTextContent(item, 'pubPrcrmntMidClsfcNm'),
+        pubPrcrmntClsfcNo: getTextContent(item, 'pubPrcrmntClsfcNo'),
+        pubPrcrmntClsfcNm: getTextContent(item, 'pubPrcrmntClsfcNm')
       };
 
-      // 업종코드 6146만 필터링 (업종코드가 있는 경우만)
-      // 업종코드가 없거나 빈 경우는 모두 포함
-      if (!indstryCode || indstryCode === '6146' || indstryCode.includes('6146')) {
-        items.push(itemData);
-      }
+      items.push(itemData);
     }
 
     const totalCount = getTextContent(xmlDoc, 'totalCount');
+    const numOfRows = getTextContent(xmlDoc, 'numOfRows');
 
-    return { success: true, items, totalCount };
+    return { success: true, items, totalCount, numOfRows };
   };
 
   const fetchBiddingData = async () => {
@@ -149,18 +163,16 @@ const BiddingInfo = () => {
     setError(null);
 
     try {
-      const endpoint = endpoints[selectedCategory];
       const params = new URLSearchParams({
-        serviceKey: API_KEY,
+        ServiceKey: API_KEY,
         numOfRows: searchParams.numOfRows,
         pageNo: searchParams.pageNo,
         inqryDiv: searchParams.inqryDiv,
         inqryBgnDt: searchParams.inqryBgnDt,
-        inqryEndDt: searchParams.inqryEndDt,
-        indstrytycd: '6146' // 업종코드: 6146 (정보시스템 감리법인)
+        inqryEndDt: searchParams.inqryEndDt
       });
 
-      const url = `${BASE_URL}${endpoint}?${params}`;
+      const url = `${BASE_URL}${ENDPOINT}?${params}`;
       console.log('API 요청 URL:', url);
 
       const response = await fetch(url);
@@ -190,11 +202,6 @@ const BiddingInfo = () => {
     }
   };
 
-  const handleCategoryChange = (category) => {
-    setSelectedCategory(category);
-    setSearchParams({ ...searchParams, pageNo: '1' });
-  };
-
   const handlePageChange = (direction) => {
     const currentPage = parseInt(searchParams.pageNo);
     const newPage = direction === 'next' ? currentPage + 1 : Math.max(1, currentPage - 1);
@@ -207,9 +214,9 @@ const BiddingInfo = () => {
   const formatDate = (dateString) => {
     if (!dateString) return '-';
     try {
-      // "2016-06-01 13:10:26" 형식 또는 YYYYMMDDHHMM 형식 처리
+      // "2025-07-01 13:21:14" 형식 또는 YYYYMMDDHHMM 형식 처리
       if (dateString.includes('-') || dateString.includes(':')) {
-        // 이미 포맷된 날짜 (2016-06-01 13:10:26)
+        // 이미 포맷된 날짜 (2025-07-01 13:21:14)
         return dateString;
       } else if (dateString.length >= 8) {
         // YYYYMMDD 또는 YYYYMMDDHHMM 형식
@@ -231,34 +238,44 @@ const BiddingInfo = () => {
     }
   };
 
+  // 입찰진행 단계 계산
+  const getBiddingStage = (item) => {
+    const now = new Date();
+    const bidBegin = item.bidBeginDt ? new Date(item.bidBeginDt) : null;
+    const bidClose = item.bidClseDt ? new Date(item.bidClseDt) : null;
+    const opening = item.opengDt ? new Date(item.opengDt) : null;
+
+    if (!bidBegin || !bidClose) return '정보없음';
+
+    if (now < bidBegin) return '입찰예정';
+    if (now >= bidBegin && now < bidClose) return '입찰중';
+    if (now >= bidClose && opening && now < opening) return '마감';
+    if (opening && now >= opening) return '개찰완료';
+
+    return '마감';
+  };
+
+  // 입찰진행 요약
+  const getBiddingSummary = (item) => {
+    const stage = getBiddingStage(item);
+
+    if (stage === '입찰중') {
+      const bidClose = new Date(item.bidClseDt);
+      const now = new Date();
+      const daysLeft = Math.ceil((bidClose - now) / (1000 * 60 * 60 * 24));
+      return `D-${daysLeft}`;
+    }
+
+    return '-';
+  };
+
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="main-title">입찰정보 (나라장터)</h1>
+        <h1 className="main-title">입찰정보 (조달청)</h1>
         <div className="bg-blue-100 text-blue-800 px-4 py-2 rounded-lg text-sm font-medium">
-          업종코드: 6146 (정보시스템 감리법인)
+          공공입찰정보서비스
         </div>
-      </div>
-
-      {/* 카테고리 탭 */}
-      <div className="mb-6 border-b border-gray-200">
-        <nav className="-mb-px flex space-x-2" aria-label="Tabs">
-          {Object.entries(categoryNames).map(([key, name]) => (
-            <button
-              key={key}
-              onClick={() => handleCategoryChange(key)}
-              className={`
-                whitespace-nowrap py-3 px-6 border-b-2 font-medium text-sm rounded-t-lg transition-colors
-                ${selectedCategory === key
-                  ? 'border-blue-500 text-blue-600 bg-blue-50'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50'
-                }
-              `}
-            >
-              {name}
-            </button>
-          ))}
-        </nav>
       </div>
 
       {/* 에러 메시지 */}
@@ -328,34 +345,53 @@ const BiddingInfo = () => {
                           {rowNumber}
                         </td>
                         <td className="px-3 py-4 text-center text-sm text-gray-900">
-                          {item.bidNtceClsfc || '기술용역'}
+                          {item.srvceDivNm || item.rgstTyNm || '-'}
                         </td>
                         <td className="px-3 py-4 text-center text-sm text-gray-900">
-                          {item.ntceDivNm || '-'}
+                          {item.ntceKindNm || '-'}
                         </td>
                         <td className="px-3 py-4 text-center text-sm text-blue-600 font-medium">
-                          {item.bidNtceNo || '-'}
+                          {item.bidNtceUrl ? (
+                            <a
+                              href={item.bidNtceUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="hover:underline"
+                            >
+                              {item.bidNtceNo || '-'}
+                            </a>
+                          ) : (
+                            item.bidNtceNo || '-'
+                          )}
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-900">
-                          <div className="font-medium">{item.ntceNm || '-'}</div>
+                          <div className="font-medium">{item.bidNtceNm || '-'}</div>
                         </td>
                         <td className="px-4 py-4 text-sm text-gray-900">
                           {item.ntceInsttNm || '-'}
                         </td>
                         <td className="px-4 py-4 text-sm text-gray-900">
-                          {item.ntceInsttNm || '-'}
+                          {item.dminsttNm || item.ntceInsttNm || '-'}
                         </td>
                         <td className="px-3 py-4 text-center text-sm text-gray-500">
-                          <div>{formatDate(item.nticeDt)}</div>
+                          <div>{formatDate(item.bidNtceDt)}</div>
                           <div className="text-xs text-gray-400 mt-1">
                             ({formatDate(item.bidClseDt)})
                           </div>
                         </td>
-                        <td className="px-3 py-4 text-center text-sm text-gray-900">
-                          -
+                        <td className="px-3 py-4 text-center text-sm">
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            getBiddingStage(item) === '입찰중' ? 'bg-green-100 text-green-800' :
+                            getBiddingStage(item) === '입찰예정' ? 'bg-blue-100 text-blue-800' :
+                            getBiddingStage(item) === '마감' ? 'bg-gray-100 text-gray-800' :
+                            getBiddingStage(item) === '개찰완료' ? 'bg-purple-100 text-purple-800' :
+                            'bg-gray-100 text-gray-600'
+                          }`}>
+                            {getBiddingStage(item)}
+                          </span>
                         </td>
-                        <td className="px-3 py-4 text-center text-sm text-gray-900">
-                          -
+                        <td className="px-3 py-4 text-center text-sm font-medium text-gray-900">
+                          {getBiddingSummary(item)}
                         </td>
                       </tr>
                     );
@@ -377,7 +413,7 @@ const BiddingInfo = () => {
               <div className="flex-1 flex justify-between sm:hidden">
                 <button
                   onClick={() => handlePageChange('prev')}
-                  disabled={searchParams.pageNo === 1}
+                  disabled={searchParams.pageNo === '1'}
                   className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   이전
@@ -399,7 +435,7 @@ const BiddingInfo = () => {
                   <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
                     <button
                       onClick={() => handlePageChange('prev')}
-                      disabled={searchParams.pageNo === 1}
+                      disabled={searchParams.pageNo === '1'}
                       className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       이전
@@ -415,21 +451,6 @@ const BiddingInfo = () => {
               </div>
             </div>
           )}
-        </div>
-      )}
-
-      {/* API 키 안내 */}
-      {!API_KEY && (
-        <div className="mt-6 p-6 bg-yellow-50 border border-yellow-200 rounded-lg">
-          <h3 className="text-lg font-semibold text-yellow-800 mb-2">API 키 설정 필요</h3>
-          <p className="text-yellow-700 mb-2">
-            입찰정보를 조회하려면 나라장터 API 키가 필요합니다.
-          </p>
-          <ol className="list-decimal list-inside text-yellow-700 space-y-1">
-            <li>프로젝트 루트에 .env 파일을 생성하세요</li>
-            <li>VITE_PROCUREMENT_API_KEY=your_api_key 형식으로 키를 추가하세요</li>
-            <li>개발 서버를 재시작하세요</li>
-          </ol>
         </div>
       )}
     </div>
