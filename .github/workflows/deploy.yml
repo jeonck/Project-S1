@@ -37,6 +37,8 @@ jobs:
       run: npm ci
 
     - name: Build project
+      env:
+        VITE_PROCUREMENT_API_KEY: ${{ secrets.VITE_PROCUREMENT_API_KEY }}
       run: npm run build
 
     - name: Setup GitHub Pages
