@@ -63,15 +63,16 @@ export const DataProvider = ({ children }) => {
 
   const initializeLocalStorage = () => {
     // 데이터 버전 관리 - 버전이 다르면 tasks를 재초기화
-    const DATA_VERSION = '2.6'; // 초기 데이터 오탈자 수정
+    const DATA_VERSION = '2.7'; // 팀원 목록 업데이트
     const currentVersion = localStorage.getItem('dataVersion');
 
     if (currentVersion !== DATA_VERSION) {
-      // 버전이 다르면 tasks, projects, milestones, deliverables를 삭제하여 재초기화되도록 함
+      // 버전이 다르면 tasks, projects, milestones, deliverables, teamMembers를 삭제하여 재초기화되도록 함
       localStorage.removeItem('tasks');
       localStorage.removeItem('projects');
       localStorage.removeItem('milestones');
       localStorage.removeItem('deliverables');
+      localStorage.removeItem('teamMembers'); // Add this to clear old teamMembers
       localStorage.setItem('dataVersion', DATA_VERSION);
     }
 
@@ -171,210 +172,30 @@ export const DataProvider = ({ children }) => {
         { id: 'tm7', name: '김연식', department: '1카미노감리', role: '수석' },
         { id: 'tm8', name: '김영빈', department: '1카미노감리', role: '수석' },
         { id: 'tm9', name: '최수석', department: '1카미노감리', role: '수석' },
+        { id: 'tm10', name: '이상인', department: '1카미노감리', role: '일반' },
+        { id: 'tm11', name: '강희태', department: '1카미노감리', role: '일반' },
+        { id: 'tm12', name: '김다정', department: '1카미노감리', role: '일반' },
+        { id: 'tm13', name: '김종우', department: '1카미노감리', role: '일반' },
+        { id: 'tm14', name: '박강효', department: '1카미노감리', role: '일반' },
+        { id: 'tm15', name: '박규효', department: '1카미노감리', role: '일반' },
+        { id: 'tm16', name: '박다솜', department: '1카미노감리', role: '일반' },
+        { id: 'tm17', name: '박세현', department: '1카미노감리', role: '일반' },
+        { id: 'tm18', name: '박용진', department: '1카미노감리', role: '일반' },
+        { id: 'tm19', name: '변원규', department: '1카미노감리', role: '일반' },
+        { id: 'tm20', name: '서동린', department: '1카미노감리', role: '일반' },
+        { id: 'tm21', name: '서우석', department: '1카미노감리', role: '일반' },
+        { id: 'tm22', name: '유순학', department: '1카미노감리', role: '일반' },
+        { id: 'tm23', name: '윤석원', department: '1카미노감리', role: '일반' },
+        { id: 'tm24', name: '이용준', department: '1카미노감리', role: '일반' },
+        { id: 'tm25', name: '이종명', department: '1카미노감리', role: '일반' },
+        { id: 'tm26', name: '이철희', department: '1카미노감리', role: '일반' },
+        { id: 'tm27', name: '임소영', department: '1카미노감리', role: '일반' },
+        { id: 'tm28', name: '전창국', department: '1카미노감리', role: '일반' },
+        { id: 'tm29', name: '조길제', department: '1카미노감리', role: '일반' },
+        { id: 'tm30', name: '최윤경', department: '1카미노감리', role: '일반' },
+        { id: 'tm31', name: '최학원', department: '1카미노감리', role: '일반' },
+        { id: 'tm32', name: '허상무', department: '1카미노감리', role: '일반' },
+        { id: 'tm33', name: '황용철', department: '1카미노감리', role: '일반' },
       ];
       localStorage.setItem('teamMembers', JSON.stringify(initialTeamMembers));
     }
-  };
-
-  const deriveMilestoneStatus = (milestone, allTasks) => {
-    const relatedTasks = allTasks.filter(task => task.milestoneId === milestone.id);
-
-    if (relatedTasks.length === 0) {
-      return '예정'; // If no tasks linked, assume planned
-    }
-
-    const allTasksCompleted = relatedTasks.every(task => task.status === '완료');
-    if (allTasksCompleted) {
-      return '완료';
-    }
-
-    const anyTaskInProgress = relatedTasks.some(task => task.status === '진행중');
-    if (anyTaskInProgress) {
-      return '진행중';
-    }
-
-    const anyTaskPlanned = relatedTasks.some(task => task.status === '계획');
-    if (anyTaskPlanned) {
-      return '계획';
-    }
-
-    return '예정'; // Default to 예정 if no tasks are completed, in progress or planned
-  };
-
-  const loadData = () => {
-    let loadedProjects = [];
-    let loadedMilestones = [];
-    let loadedDeliverables = [];
-    let loadedTasks = [];
-    let loadedTeamMembers = [];
-
-    const storedProjects = localStorage.getItem('projects');
-    if (storedProjects) loadedProjects = JSON.parse(storedProjects).map(project => ({ ...project, startDate: project.startDate || getRandomStartDate(project.dueDate) }));
-
-    const storedMilestones = localStorage.getItem('milestones');
-    if (storedMilestones) loadedMilestones = JSON.parse(storedMilestones);
-
-    const storedDeliverables = localStorage.getItem('deliverables');
-    if (storedDeliverables) loadedDeliverables = JSON.parse(storedDeliverables);
-
-    const storedTasks = localStorage.getItem('tasks');
-    if (storedTasks) loadedTasks = JSON.parse(storedTasks);
-
-    // After loading tasks and milestones, derive milestone statuses
-    loadedMilestones = loadedMilestones.map(milestone => ({
-      ...milestone,
-      status: deriveMilestoneStatus(milestone, loadedTasks)
-    }));
-
-    const storedTeamMembers = localStorage.getItem('teamMembers');
-    if (storedTeamMembers) loadedTeamMembers = JSON.parse(storedTeamMembers);
-
-    // Now process projects to assign missing assignees
-    if (loadedTeamMembers.length > 0) {
-      loadedProjects = loadedProjects.map(project => {
-        if (!project.assignee) {
-          const randomIndex = Math.floor(Math.random() * loadedTeamMembers.length);
-          return { ...project, assignee: loadedTeamMembers[randomIndex].name };
-        }
-        return project;
-      });
-    }
-
-    // Update dynamic milestone dates (프로젝트 F 시장 분석 보고서)
-    const today = new Date();
-    const upcomingDate = new Date(today);
-    upcomingDate.setDate(today.getDate() + 15);
-    const dynamicDateStr = upcomingDate.toISOString().split('T')[0];
-
-    loadedMilestones = loadedMilestones.map(milestone => {
-      if (milestone.project === '프로젝트 F' && milestone.name === '시장 분석 보고서') {
-        return { ...milestone, date: dynamicDateStr };
-      }
-      return milestone;
-    });
-
-    // Update states
-    setProjects(loadedProjects);
-    setMilestones(loadedMilestones);
-    setDeliverables(loadedDeliverables);
-    setTasks(loadedTasks);
-    setTeamMembers(loadedTeamMembers);
-  };
-
-  // CRUD 함수들
-  const addProject = (project) => {
-    setProjects([...projects, project]);
-  };
-
-  const updateProject = (index, updatedProject) => {
-    const newProjects = [...projects];
-    newProjects[index] = updatedProject;
-    setProjects(newProjects);
-  };
-
-  const deleteProject = (index) => {
-    const newProjects = projects.filter((_, i) => i !== index);
-    setProjects(newProjects);
-  };
-
-  const addMilestone = (milestone) => {
-    setMilestones([...milestones, milestone]);
-  };
-
-  const updateMilestone = (index, updatedMilestone) => {
-    const newMilestones = [...milestones];
-    newMilestones[index] = updatedMilestone;
-    setMilestones(newMilestones);
-  };
-
-  const deleteMilestone = (index) => {
-    const newMilestones = milestones.filter((_, i) => i !== index);
-    setMilestones(newMilestones);
-  };
-
-  const addDeliverable = (deliverable) => {
-    setDeliverables([...deliverables, deliverable]);
-  };
-
-  const updateDeliverable = (index, updatedDeliverable) => {
-    const newDeliverables = [...deliverables];
-    newDeliverables[index] = updatedDeliverable;
-    setDeliverables(newDeliverables);
-  };
-
-  const deleteDeliverable = (index) => {
-    const newDeliverables = deliverables.filter((_, i) => i !== index);
-    setDeliverables(newDeliverables);
-  };
-
-  // Helper function to update milestone statuses based on tasks
-  const updateRelatedMilestoneStatuses = (currentTasks) => {
-    setMilestones(prevMilestones => {
-      return prevMilestones.map(milestone => {
-        return {
-          ...milestone,
-          status: deriveMilestoneStatus(milestone, currentTasks)
-        };
-      });
-    });
-  };
-
-  const addTask = (task) => {
-    const newTask = { ...task, id: tasks.length > 0 ? Math.max(...tasks.map(t => t.id)) + 1 : 1 };
-    const updatedTasks = [...tasks, newTask];
-    setTasks(updatedTasks);
-    updateRelatedMilestoneStatuses(updatedTasks);
-  };
-
-  const updateTask = (id, updatedTask) => {
-    const updatedTasks = tasks.map(task => task.id === id ? { ...updatedTask, id } : task);
-    setTasks(updatedTasks);
-    updateRelatedMilestoneStatuses(updatedTasks);
-  };
-
-  const deleteTask = (id) => {
-    const updatedTasks = tasks.filter(task => task.id !== id);
-    setTasks(updatedTasks);
-    updateRelatedMilestoneStatuses(updatedTasks);
-  };
-
-  const addTeamMember = (teamMember) => {
-    const newTeamMember = { ...teamMember, id: teamMembers.length > 0 ? `tm${Math.max(...teamMembers.map(tm => parseInt(tm.id.substring(2)))) + 1}` : 'tm1' };
-    setTeamMembers([...teamMembers, newTeamMember]);
-  };
-
-  const updateTeamMember = (id, updatedTeamMember) => {
-    const newTeamMembers = teamMembers.map(tm => tm.id === id ? { ...updatedTeamMember, id } : tm);
-    setTeamMembers(newTeamMembers);
-  };
-
-  const deleteTeamMember = (id) => {
-    const newTeamMembers = teamMembers.filter(tm => tm.id !== id);
-    setTeamMembers(newTeamMembers);
-  };
-
-  const value = {
-    projects,
-    milestones,
-    deliverables,
-    tasks,
-    teamMembers,
-    addProject,
-    updateProject,
-    deleteProject,
-    addMilestone,
-    updateMilestone,
-    deleteMilestone,
-    addDeliverable,
-    updateDeliverable,
-    deleteDeliverable,
-    addTask,
-    updateTask,
-    deleteTask,
-    addTeamMember,
-    updateTeamMember,
-    deleteTeamMember
-  };
-
-  return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
-};
