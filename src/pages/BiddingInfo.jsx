@@ -132,9 +132,9 @@ const BiddingInfo = () => {
         indstryCode: indstryCode
       };
 
-      // 업종코드 1108만 필터링 (업종코드가 있는 경우만)
+      // 업종코드 6146만 필터링 (업종코드가 있는 경우만)
       // 업종코드가 없거나 빈 경우는 모두 포함
-      if (!indstryCode || indstryCode === '1108' || indstryCode.includes('1108')) {
+      if (!indstryCode || indstryCode === '6146' || indstryCode.includes('6146')) {
         items.push(itemData);
       }
     }
@@ -157,7 +157,7 @@ const BiddingInfo = () => {
         inqryDiv: searchParams.inqryDiv,
         inqryBgnDt: searchParams.inqryBgnDt,
         inqryEndDt: searchParams.inqryEndDt,
-        indstrytycd: '1108' // 업종코드: 1108 (감리업-종합감리)
+        indstrytycd: '6146' // 업종코드: 6146 (정보시스템 감리법인)
       });
 
       const url = `${BASE_URL}${endpoint}?${params}`;
@@ -236,7 +236,7 @@ const BiddingInfo = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="main-title">입찰정보 (나라장터)</h1>
         <div className="bg-blue-100 text-blue-800 px-4 py-2 rounded-lg text-sm font-medium">
-          업종코드: 1108 (감리업-종합감리)
+          업종코드: 6146 (정보시스템 감리법인)
         </div>
       </div>
 
