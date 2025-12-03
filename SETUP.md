@@ -27,6 +27,7 @@ npm run dev
 - **엔드포인트:** `/getBidPblancListInfoServc`
 - **제공:** 조달청 (https://apis.data.go.kr)
 - **인증키:** 소스코드에 포함
+- **공식 문서:** [조달청_나라장터 입찰공고정보서비스](https://www.data.go.kr/data/15129394/openapi.do)
 
 ### 주요 기능
 

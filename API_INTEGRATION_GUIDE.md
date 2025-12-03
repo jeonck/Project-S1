@@ -35,6 +35,7 @@
 - **서비스명:** 공공입찰정보서비스
 - **API 유형:** REST API (XML 응답)
 - **인증방식:** Service Key
+- **공식 문서:** [조달청_나라장터 입찰공고정보서비스](https://www.data.go.kr/data/15129394/openapi.do)
 
 ### 엔드포인트
 ```
@@ -796,7 +797,7 @@ const formatDate = (dateString) => {
 
 - [공공데이터포털](https://www.data.go.kr/)
 - [조달청 나라장터](https://www.g2b.go.kr/)
-- [공공입찰정보서비스 API 문서](https://www.data.go.kr/data/15076930/openapi.do)
+- [조달청_나라장터 입찰공고정보서비스 (공식 API 문서)](https://www.data.go.kr/data/15129394/openapi.do)
 - React 공식 문서: [useEffect](https://react.dev/reference/react/useEffect)
 - MDN: [DOMParser](https://developer.mozilla.org/en-US/docs/Web/API/DOMParser)
 
