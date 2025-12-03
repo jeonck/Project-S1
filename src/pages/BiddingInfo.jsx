@@ -7,9 +7,10 @@ const BiddingInfo = () => {
   const [error, setError] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('service'); // service, goods, construction, etc
   const [searchParams, setSearchParams] = useState({
-    numOfRows: 10,
-    pageNo: 1,
-    type: 'json'
+    numOfRows: '10',
+    pageNo: '1',
+    type: 'json',
+    inqryDiv: '1' // 1: 공고일시, 2: 입찰마감일시
   });
 
   const API_KEY = import.meta.env.VITE_PROCUREMENT_API_KEY;
@@ -48,10 +49,12 @@ const BiddingInfo = () => {
         serviceKey: API_KEY,
         numOfRows: searchParams.numOfRows,
         pageNo: searchParams.pageNo,
-        type: searchParams.type
+        type: searchParams.type,
+        inqryDiv: searchParams.inqryDiv
       });
 
       const url = `${BASE_URL}${endpoint}?${params}`;
+      console.log('API 요청 URL:', url);
 
       const response = await fetch(url);
 
@@ -60,13 +63,20 @@ const BiddingInfo = () => {
       }
 
       const data = await response.json();
+      console.log('API 응답 데이터:', data);
 
-      // API 응답 구조에 따라 데이터 파싱
-      if (data.response?.header?.resultCode === '00') {
-        const items = data.response?.body?.items || [];
-        setBiddingData(Array.isArray(items) ? items : [items]);
+      // API 응답 구조 파싱
+      if (data.header?.resultCode === '00') {
+        const items = data.body?.items?.item;
+
+        // item이 배열인지 단일 객체인지 확인
+        if (items) {
+          setBiddingData(Array.isArray(items) ? items : [items]);
+        } else {
+          setBiddingData([]);
+        }
       } else {
-        setError(data.response?.header?.resultMsg || '데이터를 불러오는데 실패했습니다.');
+        setError(data.header?.resultMsg || '데이터를 불러오는데 실패했습니다.');
         setBiddingData([]);
       }
     } catch (err) {
@@ -80,23 +90,36 @@ const BiddingInfo = () => {
 
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
-    setSearchParams({ ...searchParams, pageNo: 1 });
+    setSearchParams({ ...searchParams, pageNo: '1' });
   };
 
   const handlePageChange = (direction) => {
+    const currentPage = parseInt(searchParams.pageNo);
+    const newPage = direction === 'next' ? currentPage + 1 : Math.max(1, currentPage - 1);
     setSearchParams({
       ...searchParams,
-      pageNo: direction === 'next' ? searchParams.pageNo + 1 : Math.max(1, searchParams.pageNo - 1)
+      pageNo: String(newPage)
     });
   };
 
   const formatDate = (dateString) => {
     if (!dateString) return '-';
     try {
-      const year = dateString.substring(0, 4);
-      const month = dateString.substring(4, 6);
-      const day = dateString.substring(6, 8);
-      return `${year}-${month}-${day}`;
+      // YYYYMMDD 또는 YYYYMMDDHHMM 형식 처리
+      if (dateString.length >= 8) {
+        const year = dateString.substring(0, 4);
+        const month = dateString.substring(4, 6);
+        const day = dateString.substring(6, 8);
+
+        if (dateString.length >= 12) {
+          const hour = dateString.substring(8, 10);
+          const min = dateString.substring(10, 12);
+          return `${year}-${month}-${day} ${hour}:${min}`;
+        }
+
+        return `${year}-${month}-${day}`;
+      }
+      return dateString;
     } catch {
       return dateString;
     }
@@ -149,20 +172,23 @@ const BiddingInfo = () => {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
                     공고번호
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     공고명
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    수요기관
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48">
+                    공고기관
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
                     공고일시
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    입찰마감일시
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
+                    입찰시작
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
+                    입찰마감
                   </th>
                 </tr>
               </thead>
@@ -170,19 +196,32 @@ const BiddingInfo = () => {
                 {biddingData.length > 0 ? (
                   biddingData.map((item, index) => (
                     <tr key={index} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-medium">
                         {item.bidNtceNo || '-'}
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-900">
                         <div className="max-w-md">
-                          {item.bidNtceNm || '-'}
+                          <div className="font-medium">{item.ntceNm || '-'}</div>
+                          {item.bidMethdNm && (
+                            <div className="text-xs text-gray-500 mt-1">
+                              {item.bidMethdNm} | {item.cntrctMthdNm || '-'}
+                            </div>
+                          )}
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {item.dminsttNm || '-'}
+                      <td className="px-6 py-4 text-sm text-gray-900">
+                        <div>{item.ntceInsttNm || '-'}</div>
+                        {item.ofclNm && (
+                          <div className="text-xs text-gray-500 mt-1">
+                            담당: {item.ofclNm}
+                          </div>
+                        )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {formatDate(item.bidNtceDt)}
+                        {formatDate(item.nticeDt)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {formatDate(item.bidBeginDt)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {formatDate(item.bidClseDt)}
@@ -191,7 +230,7 @@ const BiddingInfo = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="5" className="px-6 py-8 text-center text-gray-500">
+                    <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
                       입찰정보가 없습니다.
                     </td>
                   </tr>
