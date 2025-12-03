@@ -90,6 +90,20 @@ const BiddingInfo = () => {
 
     for (let i = 0; i < itemElements.length; i++) {
       const item = itemElements[i];
+
+      // 업종코드 추출 (servcDtlList에서 파싱)
+      const servcDtlList = getTextContent(item, 'servcDtlList');
+      let indstryCode = '';
+
+      // servcDtlList 형식: [1^블록히팅배관 설치사업^충청북도 진천군 덕산면 두촌리 일대^2016-09-30^업종코드]
+      // 또는 다른 필드에서 업종코드를 찾을 수 있음
+      if (servcDtlList) {
+        const parts = servcDtlList.split('^');
+        if (parts.length >= 5) {
+          indstryCode = parts[4]; // 5번째 요소가 업종코드일 가능성
+        }
+      }
+
       const itemData = {
         bidNtceNo: getTextContent(item, 'bidNtceNo'),
         bidNtceOrd: getTextContent(item, 'bidNtceOrd'),
@@ -113,9 +127,16 @@ const BiddingInfo = () => {
         opengPlce: getTextContent(item, 'opengPlce'),
         refAmt: getTextContent(item, 'refAmt'),
         asignBdgtAmt: getTextContent(item, 'asignBdgtAmt'),
-        rgstDt: getTextContent(item, 'rgstDt')
+        rgstDt: getTextContent(item, 'rgstDt'),
+        servcDtlList: servcDtlList,
+        indstryCode: indstryCode
       };
-      items.push(itemData);
+
+      // 업종코드 1108만 필터링 (업종코드가 있는 경우만)
+      // 업종코드가 없거나 빈 경우는 모두 포함
+      if (!indstryCode || indstryCode === '1108' || indstryCode.includes('1108')) {
+        items.push(itemData);
+      }
     }
 
     const totalCount = getTextContent(xmlDoc, 'totalCount');
@@ -135,7 +156,8 @@ const BiddingInfo = () => {
         pageNo: searchParams.pageNo,
         inqryDiv: searchParams.inqryDiv,
         inqryBgnDt: searchParams.inqryBgnDt,
-        inqryEndDt: searchParams.inqryEndDt
+        inqryEndDt: searchParams.inqryEndDt,
+        indstrytycd: '1108' // 업종코드: 1108 (정보통신업)
       });
 
       const url = `${BASE_URL}${endpoint}?${params}`;
@@ -211,7 +233,12 @@ const BiddingInfo = () => {
 
   return (
     <div className="p-6">
-      <h1 className="main-title mb-6">입찰정보 (나라장터)</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="main-title">입찰정보 (나라장터)</h1>
+        <div className="bg-blue-100 text-blue-800 px-4 py-2 rounded-lg text-sm font-medium">
+          업종코드: 1108 (정보통신업)
+        </div>
+      </div>
 
       {/* 카테고리 탭 */}
       <div className="mb-6 border-b border-gray-200">
