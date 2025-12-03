@@ -13,7 +13,7 @@ const Tasks = () => {
     name: '',
     project: '',
     dueDate: '',
-    status: '예정',
+    status: '설계',
     assignee: '',
     description: '',
   });
@@ -36,7 +36,7 @@ const Tasks = () => {
         name: '',
         project: selectedProject === '전체' ? (projects.length > 0 ? projects[0].name : '') : selectedProject,
         dueDate: '',
-        status: '예정',
+        status: '설계',
         assignee: teamMembers.length > 0 ? teamMembers[0].name : '',
         description: '',
       });
@@ -75,8 +75,9 @@ const Tasks = () => {
     }
   };
 
-  // 프로젝트별 필터링 및 마감일 정렬
+  // 프로젝트별 필터링 및 마감일 정렬 (요구정의 상태 제외)
   const filteredTasks = tasks
+    .filter(task => task.status !== '요구정의') // '요구정의' 상태의 태스크는 표시하지 않음
     .filter(task => selectedProject === '전체' || task.project === selectedProject)
     .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
 
@@ -242,10 +243,9 @@ const Tasks = () => {
               className="w-full border border-gray-300 p-2 rounded-md focus:border-blue-600 focus:outline-none"
               required
             >
-              <option value="예정">예정</option>
-              <option value="계획">계획</option>
-              <option value="진행중">진행중</option>
-              <option value="완료">완료</option>
+              <option value="설계">설계</option>
+              <option value="종료">종료</option>
+              <option value="진단">진단</option>
             </select>
           </div>
           <div className="mb-4">
