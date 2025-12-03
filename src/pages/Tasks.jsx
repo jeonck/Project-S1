@@ -117,6 +117,16 @@ const Tasks = () => {
     }
   };
 
+  // Helper function to get audit stage from task name
+  const getAuditStageForTaskName = (taskName) => {
+    for (const stage in inspectionTasksByStage) {
+      if (inspectionTasksByStage[stage].includes(taskName)) {
+        return stage;
+      }
+    }
+    return '알 수 없음'; // Default if not found
+  };
+
   // 프로젝트별 필터링 및 마감일 정렬
   const filteredTasks = tasks
     .filter(task => selectedProject === '전체' || task.project === selectedProject)
@@ -156,6 +166,9 @@ const Tasks = () => {
                 태스크 유형
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                감리 단계
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 프로젝트
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -178,6 +191,9 @@ const Tasks = () => {
                 <tr key={task.id} className="hover:bg-gray-50 transition-all">
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                     {task.name}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {getAuditStageForTaskName(task.name)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {task.project}
