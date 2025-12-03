@@ -13,7 +13,7 @@ const Tasks = () => {
     name: '',
     project: '',
     dueDate: '',
-    status: '예정',
+    status: '요구정의',
     assignee: '',
     description: '',
   });
@@ -36,7 +36,7 @@ const Tasks = () => {
         name: '',
         project: selectedProject === '전체' ? (projects.length > 0 ? projects[0].name : '') : selectedProject,
         dueDate: '',
-        status: '예정',
+        status: '요구정의',
         assignee: teamMembers.length > 0 ? teamMembers[0].name : '',
         description: '',
       });
@@ -238,9 +238,10 @@ const Tasks = () => {
               className="w-full border border-gray-300 p-2 rounded-md focus:border-blue-600 focus:outline-none"
               required
             >
-              <option value="예정">예정</option>
-              <option value="진행 중">진행 중</option>
-              <option value="완료">완료</option>
+              <option value="요구정의">요구정의</option>
+              <option value="설계">설계</option>
+              <option value="종료">종료</option>
+              <option value="진단">진단</option>
             </select>
           </div>
           <div className="mb-4">
