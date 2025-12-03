@@ -99,7 +99,7 @@ const Projects = () => {
                 이름
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                감리 유형
+                감리 단계
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 담당자
@@ -180,7 +180,7 @@ const Projects = () => {
           </div>
           <div className="mb-4">
             <label htmlFor="auditType" className="block text-sm font-medium text-gray-700 mb-1">
-              감리 유형
+              감리 단계
             </label>
             <select
               id="auditType"
