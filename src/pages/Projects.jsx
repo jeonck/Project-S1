@@ -15,6 +15,7 @@ const Projects = () => {
     description: '',
     assignee: '',
     startDate: '', // Added startDate
+    auditType: '요구정의', // Added auditType
   });
 
   const formatDate = (dateString) => {
@@ -37,6 +38,7 @@ const Projects = () => {
         description: '',
         assignee: teamMembers.length > 0 ? teamMembers[0].name : '',
         startDate: '', // Initialize startDate for new projects
+        auditType: '요구정의', // Initialize auditType for new projects
       });
     }
     setIsModalOpen(true);
@@ -97,6 +99,9 @@ const Projects = () => {
                 이름
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                감리 유형
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 담당자
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -118,6 +123,9 @@ const Projects = () => {
               <tr key={index} className="hover:bg-gray-50 transition-all">
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                   {project.name}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {project.auditType}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {project.assignee}
@@ -169,6 +177,22 @@ const Projects = () => {
               className="w-full border border-gray-300 p-2 rounded-md focus:border-blue-600 focus:outline-none"
               required
             />
+          </div>
+          <div className="mb-4">
+            <label htmlFor="auditType" className="block text-sm font-medium text-gray-700 mb-1">
+              감리 유형
+            </label>
+            <select
+              id="auditType"
+              value={formData.auditType}
+              onChange={(e) => setFormData({ ...formData, auditType: e.target.value })}
+              className="w-full border border-gray-300 p-2 rounded-md focus:border-blue-600 focus:outline-none"
+              required
+            >
+              <option value="요구정의">요구정의</option>
+              <option value="설계">설계</option>
+              <option value="종료">종료</option>
+            </select>
           </div>
           <div className="mb-4">
             <label htmlFor="assignee" className="block text-sm font-medium text-gray-700 mb-1">
