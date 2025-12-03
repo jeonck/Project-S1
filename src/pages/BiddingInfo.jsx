@@ -283,65 +283,86 @@ const BiddingInfo = () => {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
-                    공고번호
+                  <th className="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-16">
+                    No
+                  </th>
+                  <th className="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-24">
+                    업무구분
+                  </th>
+                  <th className="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-20">
+                    구분
+                  </th>
+                  <th className="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
+                    입찰공고번호
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     공고명
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-40">
                     공고기관
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
-                    공고일시
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-40">
+                    수요기관
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
-                    입찰시작
+                  <th className="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-36">
+                    게시일시<br/>(입찰마감일시)
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
-                    입찰마감
+                  <th className="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-24">
+                    단계
+                  </th>
+                  <th className="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-28">
+                    입찰진행요약
                   </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {biddingData.length > 0 ? (
-                  biddingData.map((item, index) => (
-                    <tr key={index} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-medium">
-                        {item.bidNtceNo || '-'}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-900">
-                        <div className="max-w-md">
+                  biddingData.map((item, index) => {
+                    const currentPage = parseInt(searchParams.pageNo);
+                    const rowsPerPage = parseInt(searchParams.numOfRows);
+                    const rowNumber = (currentPage - 1) * rowsPerPage + index + 1;
+
+                    return (
+                      <tr key={index} className="hover:bg-gray-50">
+                        <td className="px-3 py-4 text-center text-sm text-gray-900">
+                          {rowNumber}
+                        </td>
+                        <td className="px-3 py-4 text-center text-sm text-gray-900">
+                          {item.bidNtceClsfc || '기술용역'}
+                        </td>
+                        <td className="px-3 py-4 text-center text-sm text-gray-900">
+                          {item.ntceDivNm || '-'}
+                        </td>
+                        <td className="px-3 py-4 text-center text-sm text-blue-600 font-medium">
+                          {item.bidNtceNo || '-'}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-900">
                           <div className="font-medium">{item.ntceNm || '-'}</div>
-                          {item.bidMethdNm && (
-                            <div className="text-xs text-gray-500 mt-1">
-                              {item.bidMethdNm} | {item.cntrctMthdNm || '-'}
-                            </div>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-900">
-                        <div>{item.ntceInsttNm || '-'}</div>
-                        {item.ofclNm && (
-                          <div className="text-xs text-gray-500 mt-1">
-                            담당: {item.ofclNm}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-gray-900">
+                          {item.ntceInsttNm || '-'}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-gray-900">
+                          {item.ntceInsttNm || '-'}
+                        </td>
+                        <td className="px-3 py-4 text-center text-sm text-gray-500">
+                          <div>{formatDate(item.nticeDt)}</div>
+                          <div className="text-xs text-gray-400 mt-1">
+                            ({formatDate(item.bidClseDt)})
                           </div>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {formatDate(item.nticeDt)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {formatDate(item.bidBeginDt)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {formatDate(item.bidClseDt)}
-                      </td>
-                    </tr>
-                  ))
+                        </td>
+                        <td className="px-3 py-4 text-center text-sm text-gray-900">
+                          -
+                        </td>
+                        <td className="px-3 py-4 text-center text-sm text-gray-900">
+                          -
+                        </td>
+                      </tr>
+                    );
+                  })
                 ) : (
                   <tr>
-                    <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
+                    <td colSpan="10" className="px-6 py-8 text-center text-gray-500">
                       입찰정보가 없습니다.
                     </td>
                   </tr>
