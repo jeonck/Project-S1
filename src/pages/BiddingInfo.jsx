@@ -36,12 +36,12 @@ const BiddingInfo = () => {
   const API_KEY = import.meta.env.VITE_PROCUREMENT_API_KEY;
   const BASE_URL = 'https://apis.data.go.kr/1230000/ao/PrvtBidNtceService';
 
-  // 카테고리별 엔드포인트
+  // 카테고리별 엔드포인트 (나라장터 검색조건 API)
   const endpoints = {
-    service: '/getPrvtBidPblancListInfoServc', // 용역
-    goods: '/getPrvtBidPblancListInfoThng', // 물품
-    construction: '/getPrvtBidPblancListInfoCnstwk', // 공사
-    etc: '/getPrvtBidPblancListInfoEtc' // 기타
+    service: '/getPrvtBidPblancListInfoServcPPSSrch', // 용역 (나라장터 검색)
+    goods: '/getPrvtBidPblancListInfoThngPPSSrch', // 물품 (나라장터 검색)
+    construction: '/getPrvtBidPblancListInfoCnstwkPPSSrch', // 공사 (나라장터 검색)
+    etc: '/getPrvtBidPblancListInfoEtcPPSSrch' // 기타 (나라장터 검색)
   };
 
   const categoryNames = {
@@ -151,13 +151,13 @@ const BiddingInfo = () => {
     try {
       const endpoint = endpoints[selectedCategory];
       const params = new URLSearchParams({
-        serviceKey: API_KEY,
+        ServiceKey: API_KEY,
         numOfRows: searchParams.numOfRows,
         pageNo: searchParams.pageNo,
         inqryDiv: searchParams.inqryDiv,
         inqryBgnDt: searchParams.inqryBgnDt,
         inqryEndDt: searchParams.inqryEndDt,
-        indstrytycd: '6146' // 업종코드: 6146 (정보시스템 감리법인)
+        indstrytyCd: '6146' // 업종코드: 6146 (정보시스템 감리법인)
       });
 
       const url = `${BASE_URL}${endpoint}?${params}`;
