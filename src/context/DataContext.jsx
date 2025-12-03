@@ -62,6 +62,16 @@ export const DataProvider = ({ children }) => {
   };
 
   const initializeLocalStorage = () => {
+    // 데이터 버전 관리 - 버전이 다르면 tasks를 재초기화
+    const DATA_VERSION = '2.0'; // 감리 유형으로 변경된 버전
+    const currentVersion = localStorage.getItem('dataVersion');
+
+    if (currentVersion !== DATA_VERSION) {
+      // 버전이 다르면 tasks를 삭제하여 재초기화되도록 함
+      localStorage.removeItem('tasks');
+      localStorage.setItem('dataVersion', DATA_VERSION);
+    }
+
     if (!localStorage.getItem('projects')) {
       const initialProjects = [
         { name: '프로젝트 A', dueDate: '2025-12-31', status: '진행 중', description: '웹 애플리케이션 개발', assignee: '고재환' },
@@ -124,16 +134,16 @@ export const DataProvider = ({ children }) => {
     if (!localStorage.getItem('tasks')) {
       const initialTasks = [
         { id: 1, name: '요구정의', project: '프로젝트 A', dueDate: '2025-04-15', status: '완료', assignee: '고재환', description: '프로젝트 A 요구정의 감리' },
-        { id: 2, name: '설계', project: '프로젝트 A', dueDate: '2025-07-20', status: '진행 중', assignee: '김기홍', description: '프로젝트 A 설계 감리' },
-        { id: 3, name: '요구정의', project: '프로젝트 B', dueDate: '2025-03-10', status: '예정', assignee: '김명현', description: '프로젝트 B 요구정의 감리' },
-        { id: 4, name: '설계', project: '프로젝트 A', dueDate: '2025-05-25', status: '진행 중', assignee: '김상협', description: '프로젝트 A 설계 감리' },
+        { id: 2, name: '설계', project: '프로젝트 A', dueDate: '2025-07-20', status: '진행중', assignee: '김기홍', description: '프로젝트 A 설계 감리' },
+        { id: 3, name: '요구정의', project: '프로젝트 B', dueDate: '2025-03-10', status: '계획', assignee: '김명현', description: '프로젝트 B 요구정의 감리' },
+        { id: 4, name: '설계', project: '프로젝트 A', dueDate: '2025-05-25', status: '진행중', assignee: '김상협', description: '프로젝트 A 설계 감리' },
         { id: 5, name: '종료', project: '프로젝트 A', dueDate: '2025-08-15', status: '예정', assignee: '김선미', description: '프로젝트 A 종료 감리' },
         { id: 6, name: '종료', project: '프로젝트 B', dueDate: '2025-04-01', status: '완료', assignee: '김연식', description: '프로젝트 B 종료 감리' },
-        { id: 7, name: '요구정의', project: '프로젝트 A', dueDate: '2025-09-10', status: '예정', assignee: '김영빈', description: '프로젝트 A 요구정의 감리' },
-        { id: 8, name: '설계', project: '프로젝트 B', dueDate: '2025-05-30', status: '진행 중', assignee: '김상현', description: '프로젝트 B 설계 감리' },
-        { id: 9, name: '요구정의', project: '프로젝트 C', dueDate: '2025-06-15', status: '예정', assignee: '고재환', description: '프로젝트 C 요구정의 감리' },
-        { id: 10, name: '종료', project: '프로젝트 B', dueDate: '2025-02-20', status: '완료', assignee: '김명현', description: '프로젝트 B 종료 감리' },
-        { id: 11, name: '요구정의', project: '프로젝트 D', dueDate: '2025-07-05', status: '예정', assignee: '김상협', description: '프로젝트 D 요구정의 감리' },
+        { id: 7, name: '요구정의', project: '프로젝트 C', dueDate: '2025-09-10', status: '예정', assignee: '김영빈', description: '프로젝트 C 요구정의 감리' },
+        { id: 8, name: '설계', project: '프로젝트 B', dueDate: '2025-05-30', status: '진행중', assignee: '김상현', description: '프로젝트 B 설계 감리' },
+        { id: 9, name: '요구정의', project: '프로젝트 C', dueDate: '2025-06-15', status: '보류', assignee: '고재환', description: '프로젝트 C 요구정의 감리' },
+        { id: 10, name: '종료', project: '프로젝트 E', dueDate: '2025-02-20', status: '완료', assignee: '김명현', description: '프로젝트 E 종료 감리' },
+        { id: 11, name: '요구정의', project: '프로젝트 D', dueDate: '2025-07-05', status: '계획', assignee: '김상협', description: '프로젝트 D 요구정의 감리' },
         { id: 12, name: '설계', project: '프로젝트 C', dueDate: '2025-08-01', status: '예정', assignee: '김기홍', description: '프로젝트 C 설계 감리' }
       ];
       localStorage.setItem('tasks', JSON.stringify(initialTasks));
