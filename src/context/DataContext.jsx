@@ -63,7 +63,7 @@ export const DataProvider = ({ children }) => {
 
   const initializeLocalStorage = () => {
     // 데이터 버전 관리 - 버전이 다르면 tasks를 재초기화
-    const DATA_VERSION = '2.4'; // 프로젝트 감리 유형 추가
+    const DATA_VERSION = '2.5'; // 3단계 감리 점검 태스크 세분화
     const currentVersion = localStorage.getItem('dataVersion');
 
     if (currentVersion !== DATA_VERSION) {
@@ -136,18 +136,26 @@ export const DataProvider = ({ children }) => {
 
     if (!localStorage.getItem('tasks')) {
       const initialTasks = [
-        { id: 1, name: '데이터베이스', project: '프로젝트 A', dueDate: '2025-04-15', status: '완료', assignee: '고재환', description: '데이터베이스 스키마 및 ERD 설계', milestoneId: 1 }, // 초기 설계 완료
-        { id: 2, name: '프론트엔드 개발', project: '프로젝트 A', dueDate: '2025-07-20', status: '진행중', assignee: '김기홍', description: 'React 기반 프론트엔드 개발', milestoneId: 2 }, // 프로토타입 개발
-        { id: 3, name: '앱 UI/UX 디자인', project: '프로젝트 B', dueDate: '2025-03-10', status: '계획', assignee: '김명현', description: '모바일 앱 UI/UX 디자인', milestoneId: 3 }, // 시장 조사
-        { id: 4, name: '백엔드 API 개발', project: '프로젝트 A', dueDate: '2025-05-25', status: '진행중', assignee: '김상협', description: 'REST API 개발 및 문서화', milestoneId: 1 }, // 초기 설계 완료
-        { id: 5, name: '사용자 테스트', project: '프로젝트 A', dueDate: '2025-08-15', status: '예정', assignee: '김선미', description: '실제 사용자를 대상으로 한 앱 테스트 진행', milestoneId: 5 }, // 베타 버전 개발
-        { id: 6, name: '마케팅 전략 수립', project: '프로젝트 B', dueDate: '2025-04-01', status: '완료', assignee: '김연식', description: '모바일 앱 출시를 위한 마케팅 전략 수립', milestoneId: 3 }, // 시장 조사
-        { id: 7, name: '기능 개선', project: '프로젝트 A', dueDate: '2025-09-10', status: '예정', assignee: '김영빈', description: '사용자 피드백을 반영한 기능 개선', milestoneId: 5 }, // 베타 버전 개발
-        { id: 8, name: '앱 출시 준비', project: '프로젝트 B', dueDate: '2025-05-30', status: '진행중', assignee: '김상현', description: '앱 스토어 등록 및 출시 업무 준비', milestoneId: 12 }, // 알파 테스트
-        { id: 9, name: '코드 리뷰', project: '프로젝트 A', dueDate: '2025-06-15', status: '진행중', assignee: '고재환', description: '코드 품질 향상을 위한 코드 리뷰 진행', milestoneId: 2 }, // 프로토타입 개발
-        { id: 10, name: '사용자 인터뷰', project: '프로젝트 B', dueDate: '2025-02-20', status: '완료', assignee: '김명현', description: '사용자 요구사항 분석을 위한 인터뷰 진행', milestoneId: 3 }, // 시장 조사
-        { id: 11, name: '성능 최적화', project: '프로젝트 A', dueDate: '2025-07-05', status: '예정', assignee: '김상협', description: '웹 서비스 성능 최적화 작업', milestoneId: 5 }, // 베타 버전 개발
-        { id: 12, name: '빌링 시스템 구현', project: '프로젝트 A', dueDate: '2025-08-01', status: '계획', assignee: '김기홍', description: '사용자 청구 및 결제 시스템 구현', milestoneId: 5 }, // 베타 버전 개발
+        // 요구정의 단계 감리 점검태스크
+        { id: 1, name: '과업 및 범위 적정성', project: '프로젝트 A', dueDate: '2025-04-15', status: '완료', assignee: '고재환', description: '프로젝트 A 과업 및 범위 적정성 감리', milestoneId: 1 },
+        { id: 2, name: '사업 관리 계획 적정성/실행 가능성', project: '프로젝트 A', dueDate: '2025-07-20', status: '진행중', assignee: '김기홍', description: '프로젝트 A 사업 관리 계획 감리', milestoneId: 2 },
+        { id: 3, name: '요구사항 분석 품질', project: '프로젝트 B', dueDate: '2025-03-10', status: '계획', assignee: '김명현', description: '프로젝트 B 요구사항 분석 품질 감리', milestoneId: 3 },
+        { id: 4, name: '기술 요소 검토', project: '프로젝트 A', dueDate: '2025-05-25', status: '진행중', assignee: '김상협', description: '프로젝트 A 기술 요소 검토 감리', milestoneId: 1 },
+        { id: 5, name: '위험 및 이슈 관리', project: '프로젝트 A', dueDate: '2025-08-15', status: '예정', assignee: '김선미', description: '프로젝트 A 위험 및 이슈 관리 감리', milestoneId: 5 },
+
+        // 설계 단계 감리 점검태스크
+        { id: 6, name: '설계 산출물 품질', project: '프로젝트 B', dueDate: '2025-04-01', status: '완료', assignee: '김연식', description: '프로젝트 B 설계 산출물 품질 감리', milestoneId: 3 },
+        { id: 7, name: '시스템 구조 설계', project: '프로젝트 A', dueDate: '2025-09-10', status: '예정', assignee: '김영빈', description: '프로젝트 A 시스템 구조 설계 감리', milestoneId: 5 },
+        { id: 8, name: '데이터 설계 품질', project: '프로젝트 B', dueDate: '2025-05-30', status: '진행중', assignee: '김상현', description: '프로젝트 B 데이터 설계 품질 감리', milestoneId: 12 },
+        { id: 9, name: '보안 및 개인정보 보호', project: '프로젝트 A', dueDate: '2025-06-15', status: '진행중', assignee: '고재환', description: '프로젝트 A 보안 및 개인정보 보호 감리', milestoneId: 2 },
+        { id: 10, name: '개발 및 테스트 계획', project: '프로젝트 B', dueDate: '2025-02-20', status: '완료', assignee: '김명현', description: '프로젝트 B 개발 및 테스트 계획 감리', milestoneId: 3 },
+
+        // 종료 단계 감리 점검태스크
+        { id: 11, name: '시스템 테스트 및 품질', project: '프로젝트 A', dueDate: '2025-07-05', status: '예정', assignee: '김상협', description: '프로젝트 A 시스템 테스트 및 품질 감리', milestoneId: 5 },
+        { id: 12, name: '산출물 및 인수인계', project: '프로젝트 A', dueDate: '2025-08-01', status: '계획', assignee: '김기홍', description: '프로젝트 A 산출물 및 인수인계 감리', milestoneId: 5 },
+        { id: 13, name: '가어 내용 이행 여부', project: '프로젝트 C', dueDate: '2025-09-01', status: '예정', assignee: '김기홍', description: '프로젝트 C 가어 내용 이행 여부 감리', milestoneId: 6 },
+        { id: 14, name: '시스템 운영 준비', project: '프로젝트 E', dueDate: '2025-03-20', status: '완료', assignee: '고재환', description: '프로젝트 E 시스템 운영 준비 감리', milestoneId: 9 },
+        { id: 15, name: '시정조치 확인', project: '프로젝트 E', dueDate: '2025-03-25', status: '완료', assignee: '고재환', description: '프로젝트 E 시정조치 확인 감리', milestoneId: 10 },
       ];
       localStorage.setItem('tasks', JSON.stringify(initialTasks));
     }

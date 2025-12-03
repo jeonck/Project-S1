@@ -9,8 +9,36 @@ const Tasks = () => {
   const [editMode, setEditMode] = useState(false);
   const [editId, setEditId] = useState(null);
   const [selectedProject, setSelectedProject] = useState('전체');
+  const [selectedAuditStage, setSelectedAuditStage] = useState(''); // New state for audit stage
+
+  // Define inspection tasks by audit stage
+  const inspectionTasksByStage = {
+    '요구정의': [
+      '과업 및 범위 적정성',
+      '사업 관리 계획 적정성/실행 가능성',
+      '요구사항 분석 품질',
+      '기술 요소 검토',
+      '위험 및 이슈 관리',
+    ],
+    '설계': [
+      '설계 산출물 품질',
+      '시스템 구조 설계',
+      '데이터 설계 품질',
+      '보안 및 개인정보 보호',
+      '개발 및 테스트 계획',
+      '과업 이행 점검',
+    ],
+    '종료': [
+      '시스템 테스트 및 품질',
+      '산출물 및 인수인계',
+      '가어 내용 이행 여부',
+      '시스템 운영 준비',
+      '시정조치 확인',
+    ],
+  };
+
   const [formData, setFormData] = useState({
-    name: '',
+    name: '', // This will hold the specific inspection task
     project: '',
     dueDate: '',
     status: '예정',
@@ -28,12 +56,25 @@ const Tasks = () => {
       const task = tasks.find(t => t.id === id);
       setEditMode(true);
       setEditId(id);
+
+      // Determine the audit stage for the existing task name
+      let stage = '';
+      for (const s in inspectionTasksByStage) {
+        if (inspectionTasksByStage[s].includes(task.name)) {
+          stage = s;
+          break;
+        }
+      }
+      setSelectedAuditStage(stage);
       setFormData(task);
     } else {
       setEditMode(false);
       setEditId(null);
+      const defaultStage = '요구정의';
+      const defaultTaskName = inspectionTasksByStage[defaultStage][0];
+      setSelectedAuditStage(defaultStage);
       setFormData({
-        name: '',
+        name: defaultTaskName,
         project: selectedProject === '전체' ? (projects.length > 0 ? projects[0].name : '') : selectedProject,
         dueDate: '',
         status: '예정',
@@ -46,6 +87,7 @@ const Tasks = () => {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    setSelectedAuditStage(''); // Reset audit stage on close
     setFormData({
       name: '',
       project: '',
@@ -202,22 +244,49 @@ const Tasks = () => {
             </select>
           </div>
           <div className="mb-4">
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-              태스크 유형
+            <label htmlFor="auditStage" className="block text-sm font-medium text-gray-700 mb-1">
+              감리 단계
             </label>
             <select
-              id="name"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              id="auditStage"
+              value={selectedAuditStage}
+              onChange={(e) => {
+                setSelectedAuditStage(e.target.value);
+                // Reset formData.name when audit stage changes
+                setFormData({ ...formData, name: inspectionTasksByStage[e.target.value]?.[0] || '' });
+              }}
               className="w-full border border-gray-300 p-2 rounded-md focus:border-blue-600 focus:outline-none"
               required
             >
-              <option value="">태스크 유형 선택</option>
-              <option value="요구정의">요구정의</option>
-              <option value="설계">설계</option>
-              <option value="종료">종료</option>
+              <option value="">감리 단계 선택</option>
+              {Object.keys(inspectionTasksByStage).map((stage) => (
+                <option key={stage} value={stage}>
+                  {stage}
+                </option>
+              ))}
             </select>
           </div>
+          {selectedAuditStage && inspectionTasksByStage[selectedAuditStage] && (
+            <div className="mb-4">
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                점검 태스크
+              </label>
+              <select
+                id="name"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="w-full border border-gray-300 p-2 rounded-md focus:border-blue-600 focus:outline-none"
+                required
+              >
+                <option value="">점검 태스크 선택</option>
+                {inspectionTasksByStage[selectedAuditStage].map((taskName) => (
+                  <option key={taskName} value={taskName}>
+                    {taskName}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
           <div className="mb-4">
             <label htmlFor="dueDate" className="block text-sm font-medium text-gray-700 mb-1">
               마감일
