@@ -7,41 +7,37 @@ const Milestones = () => {
   const { milestones, projects, addMilestone, deleteMilestone } = useData();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState('전체');
-  const [formData, setFormData] = useState({
-    name: '',
-    project: '',
-    date: '',
-    status: '예정',
-    description: '',
-  });
-
-  const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString('ko-KR', options);
-  };
-
-  const handleOpenModal = () => {
-    setFormData({
-      name: '',
-      project: selectedProject === '전체' ? (projects.length > 0 ? projects[0].name : '') : selectedProject,
-      date: '',
-      status: '예정',
-      description: '',
-    });
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setFormData({
+      const [formData, setFormData] = useState({
       name: '',
       project: '',
       date: '',
-      status: '예정',
       description: '',
     });
-  };
-
+  
+    const formatDate = (dateString) => {
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      return new Date(dateString).toLocaleDateString('ko-KR', options);
+    };
+  
+    const handleOpenModal = () => {
+      setFormData({
+        name: '',
+        project: selectedProject === '전체' ? (projects.length > 0 ? projects[0].name : '') : selectedProject,
+        date: '',
+        description: '',
+      });
+      setIsModalOpen(true);
+    };
+  
+    const handleCloseModal = () => {
+      setIsModalOpen(false);
+      setFormData({
+        name: '',
+        project: '',
+        date: '',
+        description: '',
+      });
+    };
   const handleSubmit = (e) => {
     e.preventDefault();
     addMilestone(formData);
@@ -189,22 +185,6 @@ const Milestones = () => {
               className="w-full border border-gray-300 p-2 rounded-md focus:border-blue-600 focus:outline-none"
               required
             />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-1">
-              상태
-            </label>
-            <select
-              id="status"
-              value={formData.status}
-              onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-              className="w-full border border-gray-300 p-2 rounded-md focus:border-blue-600 focus:outline-none"
-              required
-            >
-              <option value="예정">예정</option>
-              <option value="진행 중">진행 중</option>
-              <option value="완료">완료</option>
-            </select>
           </div>
           <div className="mb-4">
             <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
