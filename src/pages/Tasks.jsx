@@ -245,7 +245,6 @@ const Tasks = () => {
               <option value="예정">예정</option>
               <option value="계획">계획</option>
               <option value="진행중">진행중</option>
-              <option value="보류">보류</option>
               <option value="완료">완료</option>
             </select>
           </div>
