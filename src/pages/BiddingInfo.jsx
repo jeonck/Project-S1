@@ -9,9 +9,29 @@ const BiddingInfo = () => {
   const [searchParams, setSearchParams] = useState({
     numOfRows: '10',
     pageNo: '1',
-    type: 'json',
-    inqryDiv: '1' // 1: 공고일시, 2: 입찰마감일시
+    inqryDiv: '1', // 1: 공고일시, 2: 입찰마감일시
+    inqryBgnDt: '', // YYYYMMDDHHMM 형식
+    inqryEndDt: '' // YYYYMMDDHHMM 형식
   });
+
+  // 기본 조회 기간 설정 (최근 30일)
+  const getDefaultDateRange = () => {
+    const now = new Date();
+    const endDate = now;
+    const startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000); // 30일 전
+
+    const formatDateTime = (date) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}${month}${day}0000`;
+    };
+
+    return {
+      inqryBgnDt: formatDateTime(startDate),
+      inqryEndDt: formatDateTime(endDate)
+    };
+  };
 
   const API_KEY = import.meta.env.VITE_PROCUREMENT_API_KEY;
   const BASE_URL = 'https://apis.data.go.kr/1230000/ao/PrvtBidNtceService';
@@ -32,12 +52,76 @@ const BiddingInfo = () => {
   };
 
   useEffect(() => {
-    if (API_KEY) {
+    // 초기 날짜 범위 설정
+    const dateRange = getDefaultDateRange();
+    setSearchParams(prev => ({
+      ...prev,
+      ...dateRange
+    }));
+  }, []);
+
+  useEffect(() => {
+    if (API_KEY && searchParams.inqryBgnDt && searchParams.inqryEndDt) {
       fetchBiddingData();
-    } else {
+    } else if (!API_KEY) {
       setError('API 키가 설정되지 않았습니다. .env 파일을 확인하세요.');
     }
-  }, [selectedCategory, searchParams.pageNo]);
+  }, [selectedCategory, searchParams.pageNo, searchParams.inqryBgnDt, searchParams.inqryEndDt]);
+
+  // XML 파싱 함수
+  const parseXML = (xmlString) => {
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xmlString, 'text/xml');
+
+    const getTextContent = (element, tagName) => {
+      const el = element.getElementsByTagName(tagName)[0];
+      return el ? el.textContent : '';
+    };
+
+    const resultCode = getTextContent(xmlDoc, 'resultCode');
+    const resultMsg = getTextContent(xmlDoc, 'resultMsg');
+
+    if (resultCode !== '00') {
+      return { success: false, message: resultMsg || '데이터를 불러오는데 실패했습니다.' };
+    }
+
+    const items = [];
+    const itemElements = xmlDoc.getElementsByTagName('item');
+
+    for (let i = 0; i < itemElements.length; i++) {
+      const item = itemElements[i];
+      const itemData = {
+        bidNtceNo: getTextContent(item, 'bidNtceNo'),
+        bidNtceOrd: getTextContent(item, 'bidNtceOrd'),
+        bidNtceClsfc: getTextContent(item, 'bidNtceClsfc'),
+        nticeDt: getTextContent(item, 'nticeDt'),
+        refNo: getTextContent(item, 'refNo'),
+        ntceNm: getTextContent(item, 'ntceNm'),
+        ntceDivNm: getTextContent(item, 'ntceDivNm'),
+        ntceInsttNm: getTextContent(item, 'ntceInsttNm'),
+        bidMethdNm: getTextContent(item, 'bidMethdNm'),
+        cntrctMthdNm: getTextContent(item, 'cntrctMthdNm'),
+        sucsfbidMthdNm: getTextContent(item, 'sucsfbidMthdNm'),
+        rbidDivNm: getTextContent(item, 'rbidDivNm'),
+        bidQlfctNm: getTextContent(item, 'bidQlfctNm'),
+        ofclNm: getTextContent(item, 'ofclNm'),
+        ofclTelNo: getTextContent(item, 'ofclTelNo'),
+        ofclEmail: getTextContent(item, 'ofclEmail'),
+        bidBeginDt: getTextContent(item, 'bidBeginDt'),
+        bidClseDt: getTextContent(item, 'bidClseDt'),
+        opengDt: getTextContent(item, 'opengDt'),
+        opengPlce: getTextContent(item, 'opengPlce'),
+        refAmt: getTextContent(item, 'refAmt'),
+        asignBdgtAmt: getTextContent(item, 'asignBdgtAmt'),
+        rgstDt: getTextContent(item, 'rgstDt')
+      };
+      items.push(itemData);
+    }
+
+    const totalCount = getTextContent(xmlDoc, 'totalCount');
+
+    return { success: true, items, totalCount };
+  };
 
   const fetchBiddingData = async () => {
     setLoading(true);
@@ -49,8 +133,9 @@ const BiddingInfo = () => {
         serviceKey: API_KEY,
         numOfRows: searchParams.numOfRows,
         pageNo: searchParams.pageNo,
-        type: searchParams.type,
-        inqryDiv: searchParams.inqryDiv
+        inqryDiv: searchParams.inqryDiv,
+        inqryBgnDt: searchParams.inqryBgnDt,
+        inqryEndDt: searchParams.inqryEndDt
       });
 
       const url = `${BASE_URL}${endpoint}?${params}`;
@@ -62,21 +147,16 @@ const BiddingInfo = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data = await response.json();
-      console.log('API 응답 데이터:', data);
+      const xmlText = await response.text();
+      console.log('API 응답 (XML):', xmlText.substring(0, 500));
 
-      // API 응답 구조 파싱
-      if (data.header?.resultCode === '00') {
-        const items = data.body?.items?.item;
+      const result = parseXML(xmlText);
 
-        // item이 배열인지 단일 객체인지 확인
-        if (items) {
-          setBiddingData(Array.isArray(items) ? items : [items]);
-        } else {
-          setBiddingData([]);
-        }
+      if (result.success) {
+        setBiddingData(result.items || []);
+        console.log('파싱된 데이터:', result.items);
       } else {
-        setError(data.header?.resultMsg || '데이터를 불러오는데 실패했습니다.');
+        setError(result.message);
         setBiddingData([]);
       }
     } catch (err) {
@@ -105,8 +185,12 @@ const BiddingInfo = () => {
   const formatDate = (dateString) => {
     if (!dateString) return '-';
     try {
-      // YYYYMMDD 또는 YYYYMMDDHHMM 형식 처리
-      if (dateString.length >= 8) {
+      // "2016-06-01 13:10:26" 형식 또는 YYYYMMDDHHMM 형식 처리
+      if (dateString.includes('-') || dateString.includes(':')) {
+        // 이미 포맷된 날짜 (2016-06-01 13:10:26)
+        return dateString;
+      } else if (dateString.length >= 8) {
+        // YYYYMMDD 또는 YYYYMMDDHHMM 형식
         const year = dateString.substring(0, 4);
         const month = dateString.substring(4, 6);
         const day = dateString.substring(6, 8);
