@@ -63,65 +63,68 @@ export const DataProvider = ({ children }) => {
 
   const initializeLocalStorage = () => {
     // 데이터 버전 관리 - 버전이 다르면 tasks를 재초기화
-    const DATA_VERSION = '2.2'; // 보류 상태 제거 버전
+    const DATA_VERSION = '2.3'; // 새로운 상태 제거 및 마일스톤 연동 버전
     const currentVersion = localStorage.getItem('dataVersion');
 
     if (currentVersion !== DATA_VERSION) {
-      // 버전이 다르면 tasks를 삭제하여 재초기화되도록 함
+      // 버전이 다르면 tasks, projects, milestones, deliverables를 삭제하여 재초기화되도록 함
       localStorage.removeItem('tasks');
+      localStorage.removeItem('projects');
+      localStorage.removeItem('milestones');
+      localStorage.removeItem('deliverables');
       localStorage.setItem('dataVersion', DATA_VERSION);
     }
 
     if (!localStorage.getItem('projects')) {
       const initialProjects = [
-        { name: '프로젝트 A', dueDate: '2025-12-31', status: '진행 중', description: '웹 애플리케이션 개발', assignee: '고재환' },
+        { name: '프로젝트 A', dueDate: '2025-12-31', status: '진행중', description: '웹 애플리케이션 개발', assignee: '고재환' },
         { name: '프로젝트 B', dueDate: '2025-06-30', status: '계획', description: '모바일 앱 런칭', assignee: '김기홍' },
-        { name: '프로젝트 C', dueDate: '2025-09-15', status: '진행 중', description: '인공지능 분석 시스템 개발', assignee: '김명현' },
-        { name: '프로젝트 D', dueDate: '2026-02-28', status: '계획', description: '클라우드 서비스 플랫폼 구축', assignee: '김상협' },
+        { name: '프로젝트 C', dueDate: '2025-09-15', status: '진행중', description: '인공지능 분석 시스템 개발', assignee: '김명현' },
+        { name: '프로젝트 D', dueDate: '2026-02-28', status: '예정', description: '클라우드 서비스 플랫폼 구축', assignee: '김상협' },
         { name: '프로젝트 E', dueDate: '2025-03-31', status: '완료', description: '사내 그룹웨어 마이그레이션', assignee: '고재환' },
         { name: '프로젝트 F', dueDate: '2026-06-30', status: '계획', description: '새로운 서비스 런칭 준비', assignee: '김기홍' },
-        { name: '프로젝트 G', dueDate: '2026-08-31', status: '계획', description: '신규 고객사 온보딩', assignee: '고재환' },
+        { name: '프로젝트 G', dueDate: '2026-08-31', status: '예정', description: '신규 고객사 온보딩', assignee: '고재환' },
         { name: '프로젝트 H', dueDate: '2026-04-30', status: '계획', description: '기술 부채 해결', assignee: '최수석' }
       ].map(p => ({ ...p, startDate: getRandomStartDate(p.dueDate) }));
       localStorage.setItem('projects', JSON.stringify(initialProjects));
     }
 
-        if (!localStorage.getItem('milestones')) {
-          const initialMilestones = [
-            { id: 1, project: '프로젝트 A', name: '초기 설계 완료', date: '2025-03-01', status: '종료', description: '시스템 아키텍처 설계' },
-            { id: 2, project: '프로젝트 A', name: '프로토타입 개발', date: '2025-06-01', status: '설계', description: 'UI/UX 프로토타입' },
-            { id: 3, project: '프로젝트 B', name: '시장 조사', date: '2025-02-15', status: '요구정의', description: '사용자 요구 분석' },
-            { id: 4, project: '프로젝트 C', name: '기술 타당성 분석', date: '2025-04-15', status: '종료', description: 'AI 모델 선정 및 타당성 분석' },
-            { id: 5, project: '프로젝트 A', name: '베타 버전 개발', date: '2025-09-15', status: '요구정의', description: '베타 버전 개발 및 테스트' },
-            { id: 6, project: '프로젝트 C', name: '알고리즘 구현', date: '2025-06-30', status: '설계', description: '기계학습 알고리즘 구현' },
-            { id: 7, project: '프로젝트 D', name: '요구사항 정의', date: '2025-10-01', status: '요구정의', description: '플랫폼 요구사항 정의 및 분석' },
-            { id: 8, project: '프로젝트 B', name: '디자인 완료', date: '2025-04-30', status: '요구정의', description: '앱 UI/UX 디자인 완료' },
-            { id: 9, project: '프로젝트 E', name: '시스템 마이그레이션', date: '2025-02-28', status: '종료', description: '기존 시스템에서 새로운 시스템으로 마이그레이션' },
-            { id: 10, project: '프로젝트 E', name: '사용자 교육', date: '2025-03-15', status: '종료', description: '새로운 시스템 사용법 교육' },
-            { id: 11, project: '프로젝트 D', name: '아키텍처 설계', date: '2025-12-01', status: '요구정의', description: '클라우드 아키텍처 설계 및 검증' },
-            // Added for upcoming milestones test
-            { id: 12, project: '프로젝트 B', name: '알파 테스트', date: '2025-05-20', status: '설계', description: '내부 알파 테스트 진행' },
-            { id: 13, project: '프로젝트 A', name: 'UI 개선', date: '2025-06-10', status: '요구정의', description: '사용자 피드백 기반 UI 개선' },
-            { id: 14, project: '프로젝트 C', name: '데이터 전처리', date: '2025-05-25', status: '요구정의', description: '분석용 데이터 전처리' },
-            { id: 15, project: '프로젝트 B', name: 'QA 리뷰', date: '2025-05-18', status: '종료', description: 'QA팀의 최종 리뷰' },
-            { id: 16, project: '프로젝트 A', name: '최종 보고서 제출', date: '2025-12-19', status: '요구정의', description: '프로젝트 최종 보고서 제출' },
-            // Added for guaranteed upcoming milestone
-            {
-              id: 17,
-              project: '프로젝트 F',
-              name: '시장 분석 보고서',
-              date: (() => {
-                const today = new Date();
-                const upcomingDate = new Date(today);
-                upcomingDate.setDate(today.getDate() + 15);
-                return upcomingDate.toISOString().split('T')[0];
-              })(),
-              status: '요구정의',
-              description: '신규 서비스 시장 분석 완료'
-            }
-          ];
-          localStorage.setItem('milestones', JSON.stringify(initialMilestones));
+    if (!localStorage.getItem('milestones')) {
+      const initialMilestones = [
+        { id: 1, project: '프로젝트 A', name: '초기 설계 완료', date: '2025-03-01', status: '완료', description: '시스템 아키텍처 설계' },
+        { id: 2, project: '프로젝트 A', name: '프로토타입 개발', date: '2025-06-01', status: '진행중', description: 'UI/UX 프로토타입' },
+        { id: 3, project: '프로젝트 B', name: '시장 조사', date: '2025-02-15', status: '계획', description: '사용자 요구 분석' },
+        { id: 4, project: '프로젝트 C', name: '기술 타당성 분석', date: '2025-04-15', status: '완료', description: 'AI 모델 선정 및 타당성 분석' },
+        { id: 5, project: '프로젝트 A', name: '베타 버전 개발', date: '2025-09-15', status: '예정', description: '베타 버전 개발 및 테스트' },
+        { id: 6, project: '프로젝트 C', name: '알고리즘 구현', date: '2025-06-30', status: '진행중', description: '기계학습 알고리즘 구현' },
+        { id: 7, project: '프로젝트 D', name: '요구사항 정의', date: '2025-10-01', status: '예정', description: '플랫폼 요구사항 정의 및 분석' },
+        { id: 8, project: '프로젝트 B', name: '디자인 완료', date: '2025-04-30', status: '계획', description: '앱 UI/UX 디자인 완료' },
+        { id: 9, project: '프로젝트 E', name: '시스템 마이그레이션', date: '2025-02-28', status: '완료', description: '기존 시스템에서 새로운 시스템으로 마이그레이션' },
+        { id: 10, project: '프로젝트 E', name: '사용자 교육', date: '2025-03-15', status: '완료', description: '새로운 시스템 사용법 교육' },
+        { id: 11, project: '프로젝트 D', name: '아키텍처 설계', date: '2025-12-01', status: '예정', description: '클라우드 아키텍처 설계 및 검증' },
+        // Added for upcoming milestones test
+        { id: 12, project: '프로젝트 B', name: '알파 테스트', date: '2025-05-20', status: '진행중', description: '내부 알파 테스트 진행' },
+        { id: 13, project: '프로젝트 A', name: 'UI 개선', date: '2025-06-10', status: '예정', description: '사용자 피드백 기반 UI 개선' },
+        { id: 14, project: '프로젝트 C', name: '데이터 전처리', date: '2025-05-25', status: '계획', description: '분석용 데이터 전처리' },
+        { id: 15, project: '프로젝트 B', name: 'QA 리뷰', date: '2025-05-18', status: '완료', description: 'QA팀의 최종 리뷰' },
+        { id: 16, project: '프로젝트 A', name: '최종 보고서 제출', date: '2025-12-19', status: '예정', description: '프로젝트 최종 보고서 제출' },
+        // Added for guaranteed upcoming milestone
+        {
+          id: 17,
+          project: '프로젝트 F',
+          name: '시장 분석 보고서',
+          date: (() => {
+            const today = new Date();
+            const upcomingDate = new Date(today);
+            upcomingDate.setDate(today.getDate() + 15);
+            return upcomingDate.toISOString().split('T')[0];
+          })(),
+          status: '계획',
+          description: '신규 서비스 시장 분석 완료'
         }
+      ];
+      localStorage.setItem('milestones', JSON.stringify(initialMilestones));
+    }
     if (!localStorage.getItem('deliverables')) {
       const initialDeliverables = [
         { project: '프로젝트 A', name: '설계 문서', date: '2025-03-01', status: '완료', description: '시스템 아키텍처 문서' },
@@ -133,18 +136,18 @@ export const DataProvider = ({ children }) => {
 
     if (!localStorage.getItem('tasks')) {
       const initialTasks = [
-        { id: 1, name: '데이터베이스 요구정의', project: '프로젝트 A', dueDate: '2025-04-15', status: '요구정의', assignee: '고재환', description: '데이터베이스 스키마 및 ERD 요구사항 정의', milestoneId: 1 }, // 초기 설계 완료
-        { id: 2, name: '프론트엔드 설계', project: '프로젝트 A', dueDate: '2025-07-20', status: '설계', assignee: '김기홍', description: 'React 기반 프론트엔드 설계', milestoneId: 2 }, // 프로토타입 개발
-        { id: 3, name: '앱 요구정의', project: '프로젝트 B', dueDate: '2025-03-10', status: '요구정의', assignee: '김명현', description: '모바일 앱 UI/UX 요구정의', milestoneId: 3 }, // 시장 조사
-        { id: 4, name: '백엔드 API 설계', project: '프로젝트 A', dueDate: '2025-05-25', status: '설계', assignee: '김상협', description: 'REST API 설계 및 문서화', milestoneId: 1 }, // 초기 설계 완료
-        { id: 5, name: '사용자 테스트 진단', project: '프로젝트 A', dueDate: '2025-08-15', status: '진단', assignee: '김선미', description: '실제 사용자를 대상으로 한 앱 테스트 진행', milestoneId: 2 }, // 프로토타입 개발
-        { id: 6, name: '마케팅 전략 종료', project: '프로젝트 B', dueDate: '2025-04-01', status: '종료', assignee: '김연식', description: '모바일 앱 출시를 위한 마케팅 전략 수립', milestoneId: 3 }, // 시장 조사
-        { id: 7, name: '기능개선 요구정의', project: '프로젝트 A', dueDate: '2025-09-10', status: '요구정의', assignee: '김영빈', description: '사용자 피드백을 반영한 기능 개선 요구정의', milestoneId: 5 }, // 베타 버전 개발
-        { id: 8, name: '앱 출시 진단', project: '프로젝트 B', dueDate: '2025-05-30', status: '진단', assignee: '김상현', description: '앱 스토어 등록 및 출시 업무 진단', milestoneId: 12 }, // 알파 테스트
-        { id: 9, name: '코드 리뷰 진단', project: '프로젝트 A', dueDate: '2025-06-15', status: '진단', assignee: '고재환', description: '코드 품질 향상을 위한 코드 리뷰 진행', milestoneId: 2 }, // 프로토타입 개발
-        { id: 10, name: '사용자 인터뷰 종료', project: '프로젝트 B', dueDate: '2025-02-20', status: '종료', assignee: '김명현', description: '사용자 요구사항 분석을 위한 인터뷰 진행', milestoneId: 3 }, // 시장 조사
-        { id: 11, name: '성능 최적화 설계', project: '프로젝트 A', dueDate: '2025-07-05', status: '설계', assignee: '김상협', description: '웹 서비스 성능 최적화 작업 설계', milestoneId: 5 }, // 베타 버전 개발
-        { id: 12, name: '빌링 시스템 요구정의', project: '프로젝트 A', dueDate: '2025-08-01', status: '요구정의', assignee: '김기홍', description: '사용자 청구 및 결제 시스템 요구정의', milestoneId: 5 }, // 베타 버전 개발
+        { id: 1, name: '데이터베이스 설계', project: '프로젝트 A', dueDate: '2025-04-15', status: '완료', assignee: '고재환', description: '데이터베이스 스키마 및 ERD 설계', milestoneId: 1 }, // 초기 설계 완료
+        { id: 2, name: '프론트엔드 개발', project: '프로젝트 A', dueDate: '2025-07-20', status: '진행중', assignee: '김기홍', description: 'React 기반 프론트엔드 개발', milestoneId: 2 }, // 프로토타입 개발
+        { id: 3, name: '앱 UI/UX 디자인', project: '프로젝트 B', dueDate: '2025-03-10', status: '계획', assignee: '김명현', description: '모바일 앱 UI/UX 디자인', milestoneId: 3 }, // 시장 조사
+        { id: 4, name: '백엔드 API 개발', project: '프로젝트 A', dueDate: '2025-05-25', status: '진행중', assignee: '김상협', description: 'REST API 개발 및 문서화', milestoneId: 1 }, // 초기 설계 완료
+        { id: 5, name: '사용자 테스트', project: '프로젝트 A', dueDate: '2025-08-15', status: '예정', assignee: '김선미', description: '실제 사용자를 대상으로 한 앱 테스트 진행', milestoneId: 5 }, // 베타 버전 개발
+        { id: 6, name: '마케팅 전략 수립', project: '프로젝트 B', dueDate: '2025-04-01', status: '완료', assignee: '김연식', description: '모바일 앱 출시를 위한 마케팅 전략 수립', milestoneId: 3 }, // 시장 조사
+        { id: 7, name: '기능 개선', project: '프로젝트 A', dueDate: '2025-09-10', status: '예정', assignee: '김영빈', description: '사용자 피드백을 반영한 기능 개선', milestoneId: 5 }, // 베타 버전 개발
+        { id: 8, name: '앱 출시 준비', project: '프로젝트 B', dueDate: '2025-05-30', status: '진행중', assignee: '김상현', description: '앱 스토어 등록 및 출시 업무 준비', milestoneId: 12 }, // 알파 테스트
+        { id: 9, name: '코드 리뷰', project: '프로젝트 A', dueDate: '2025-06-15', status: '진행중', assignee: '고재환', description: '코드 품질 향상을 위한 코드 리뷰 진행', milestoneId: 2 }, // 프로토타입 개발
+        { id: 10, name: '사용자 인터뷰', project: '프로젝트 B', dueDate: '2025-02-20', status: '완료', assignee: '김명현', description: '사용자 요구사항 분석을 위한 인터뷰 진행', milestoneId: 3 }, // 시장 조사
+        { id: 11, name: '성능 최적화', project: '프로젝트 A', dueDate: '2025-07-05', status: '예정', assignee: '김상협', description: '웹 서비스 성능 최적화 작업', milestoneId: 5 }, // 베타 버전 개발
+        { id: 12, name: '빌링 시스템 구현', project: '프로젝트 A', dueDate: '2025-08-01', status: '계획', assignee: '김기홍', description: '사용자 청구 및 결제 시스템 구현', milestoneId: 5 }, // 베타 버전 개발
       ];
       localStorage.setItem('tasks', JSON.stringify(initialTasks));
     }
@@ -169,20 +172,25 @@ export const DataProvider = ({ children }) => {
     const relatedTasks = allTasks.filter(task => task.milestoneId === milestone.id);
 
     if (relatedTasks.length === 0) {
-      return '요구정의'; // If no tasks linked, assume planned
+      return '예정'; // If no tasks linked, assume planned
     }
 
-    const allTasksCompleted = relatedTasks.every(task => task.status === '종료');
+    const allTasksCompleted = relatedTasks.every(task => task.status === '완료');
     if (allTasksCompleted) {
-      return '종료';
+      return '완료';
     }
 
-    const anyTaskInProgress = relatedTasks.some(task => ['설계', '진단'].includes(task.status));
+    const anyTaskInProgress = relatedTasks.some(task => task.status === '진행중');
     if (anyTaskInProgress) {
-      return '설계'; // Representing in progress
+      return '진행중';
     }
 
-    return '요구정의'; // Default to planned if no tasks are completed or in progress
+    const anyTaskPlanned = relatedTasks.some(task => task.status === '계획');
+    if (anyTaskPlanned) {
+      return '계획';
+    }
+
+    return '예정'; // Default to 예정 if no tasks are completed, in progress or planned
   };
 
   const loadData = () => {
@@ -202,23 +210,7 @@ export const DataProvider = ({ children }) => {
     if (storedDeliverables) loadedDeliverables = JSON.parse(storedDeliverables);
 
     const storedTasks = localStorage.getItem('tasks');
-    if (storedTasks) {
-      loadedTasks = JSON.parse(storedTasks).map(task => {
-        // Migrate old statuses to new ones
-        switch (task.status) {
-          case '완료':
-            return { ...task, status: '종료' };
-          case '진행 중':
-            return { ...task, status: '설계' };
-          case '예정':
-            return { ...task, status: '요구정의' };
-          case '계획': // Also convert '계획' if it somehow still exists
-            return { ...task, status: '요구정의' };
-          default:
-            return task;
-        }
-      });
-    }
+    if (storedTasks) loadedTasks = JSON.parse(storedTasks);
 
     // After loading tasks and milestones, derive milestone statuses
     loadedMilestones = loadedMilestones.map(milestone => ({
