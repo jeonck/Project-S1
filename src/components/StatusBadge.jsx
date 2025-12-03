@@ -1,10 +1,11 @@
 const StatusBadge = ({ status }) => {
   const getStatusClass = (status) => {
     const statusClasses = {
-      '요구정의': 'status-planned', // Requirements Definition
-      '설계': 'status-progress',    // Design
-      '종료': 'status-completed',   // Completed
-      '진단': 'status-diagnosis',   // Diagnosis/Review - using a new custom class
+      '예정': 'status-planned',
+      '진행 중': 'status-progress',
+      '완료': 'status-completed',
+      '계획': 'status-planned',
+      '보류': 'status-delayed',
     };
     return statusClasses[status] || 'status-planned'; // Default to 'planned' if status is not found
   };

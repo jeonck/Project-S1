@@ -13,7 +13,7 @@ const Tasks = () => {
     name: '',
     project: '',
     dueDate: '',
-    status: '요구정의',
+    status: '예정',
     assignee: '',
     description: '',
   });
@@ -36,7 +36,7 @@ const Tasks = () => {
         name: '',
         project: selectedProject === '전체' ? (projects.length > 0 ? projects[0].name : '') : selectedProject,
         dueDate: '',
-        status: '요구정의',
+        status: '예정',
         assignee: teamMembers.length > 0 ? teamMembers[0].name : '',
         description: '',
       });
@@ -111,7 +111,7 @@ const Tasks = () => {
           <thead className="bg-blue-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                이름
+                감리 유형
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 프로젝트
@@ -203,16 +203,20 @@ const Tasks = () => {
           </div>
           <div className="mb-4">
             <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-              작업 이름
+              감리 유형
             </label>
-            <input
-              type="text"
+            <select
               id="name"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               className="w-full border border-gray-300 p-2 rounded-md focus:border-blue-600 focus:outline-none"
               required
-            />
+            >
+              <option value="">감리 유형 선택</option>
+              <option value="요구정의">요구정의</option>
+              <option value="설계">설계</option>
+              <option value="종료">종료</option>
+            </select>
           </div>
           <div className="mb-4">
             <label htmlFor="dueDate" className="block text-sm font-medium text-gray-700 mb-1">
@@ -238,10 +242,9 @@ const Tasks = () => {
               className="w-full border border-gray-300 p-2 rounded-md focus:border-blue-600 focus:outline-none"
               required
             >
-              <option value="요구정의">요구정의</option>
-              <option value="설계">설계</option>
-              <option value="종료">종료</option>
-              <option value="진단">진단</option>
+              <option value="예정">예정</option>
+              <option value="진행 중">진행 중</option>
+              <option value="완료">완료</option>
             </select>
           </div>
           <div className="mb-4">
