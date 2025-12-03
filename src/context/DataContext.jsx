@@ -172,7 +172,21 @@ export const DataProvider = ({ children }) => {
     if (storedDeliverables) loadedDeliverables = JSON.parse(storedDeliverables);
 
     const storedTasks = localStorage.getItem('tasks');
-    if (storedTasks) loadedTasks = JSON.parse(storedTasks);
+    if (storedTasks) {
+      loadedTasks = JSON.parse(storedTasks).map(task => {
+        // Migrate old statuses to new ones
+        switch (task.status) {
+          case '완료':
+            return { ...task, status: '종료' };
+          case '진행 중':
+            return { ...task, status: '설계' };
+          case '예정':
+            return { ...task, status: '요구정의' };
+          default:
+            return task;
+        }
+      });
+    }
 
     const storedTeamMembers = localStorage.getItem('teamMembers');
     if (storedTeamMembers) loadedTeamMembers = JSON.parse(storedTeamMembers);
