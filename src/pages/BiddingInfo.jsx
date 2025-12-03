@@ -157,7 +157,7 @@ const BiddingInfo = () => {
         inqryDiv: searchParams.inqryDiv,
         inqryBgnDt: searchParams.inqryBgnDt,
         inqryEndDt: searchParams.inqryEndDt,
-        indstrytycd: '1108' // 업종코드: 1108 (정보통신업)
+        indstrytycd: '1108' // 업종코드: 1108 (감리업-종합감리)
       });
 
       const url = `${BASE_URL}${endpoint}?${params}`;
@@ -236,7 +236,7 @@ const BiddingInfo = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="main-title">입찰정보 (나라장터)</h1>
         <div className="bg-blue-100 text-blue-800 px-4 py-2 rounded-lg text-sm font-medium">
-          업종코드: 1108 (정보통신업)
+          업종코드: 1108 (감리업-종합감리)
         </div>
       </div>
 
