@@ -136,7 +136,7 @@ export const DataProvider = ({ children }) => {
 
     if (!localStorage.getItem('tasks')) {
       const initialTasks = [
-        { id: 1, name: '데이터베이스 설계', project: '프로젝트 A', dueDate: '2025-04-15', status: '완료', assignee: '고재환', description: '데이터베이스 스키마 및 ERD 설계', milestoneId: 1 }, // 초기 설계 완료
+        { id: 1, name: '데이터베이스', project: '프로젝트 A', dueDate: '2025-04-15', status: '완료', assignee: '고재환', description: '데이터베이스 스키마 및 ERD 설계', milestoneId: 1 }, // 초기 설계 완료
         { id: 2, name: '프론트엔드 개발', project: '프로젝트 A', dueDate: '2025-07-20', status: '진행중', assignee: '김기홍', description: 'React 기반 프론트엔드 개발', milestoneId: 2 }, // 프로토타입 개발
         { id: 3, name: '앱 UI/UX 디자인', project: '프로젝트 B', dueDate: '2025-03-10', status: '계획', assignee: '김명현', description: '모바일 앱 UI/UX 디자인', milestoneId: 3 }, // 시장 조사
         { id: 4, name: '백엔드 API 개발', project: '프로젝트 A', dueDate: '2025-05-25', status: '진행중', assignee: '김상협', description: 'REST API 개발 및 문서화', milestoneId: 1 }, // 초기 설계 완료
