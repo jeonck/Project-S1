@@ -50,6 +50,18 @@ const Sidebar = ({ isOpen, onClose }) => {
           ),
           text: '리소스 플래너',
         },
+        {
+          path: '/milestones',
+          icon: (
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          ),
+          text: '마일스톤',
+        },
       ],
     },
     {
@@ -68,30 +80,6 @@ const Sidebar = ({ isOpen, onClose }) => {
           text: '프로젝트',
         },
         {
-          path: '/requirements',
-          icon: (
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
-            />
-          ),
-          text: '요구사항 관리',
-        },
-        {
-          path: '/milestones',
-          icon: (
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          ),
-          text: '마일스톤',
-        },
-        {
           path: '/tasks',
           icon: (
             <path
@@ -102,18 +90,6 @@ const Sidebar = ({ isOpen, onClose }) => {
             />
           ),
           text: '태스크',
-        },
-        {
-          path: '/deliverables',
-          icon: (
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-            />
-          ),
-          text: '산출물',
         },
       ],
     },
@@ -143,6 +119,30 @@ const Sidebar = ({ isOpen, onClose }) => {
             />
           ),
           text: '가이드',
+        },
+        {
+          path: '/requirements',
+          icon: (
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+            />
+          ),
+          text: '요구사항 관리',
+        },
+        {
+          path: '/deliverables',
+          icon: (
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            />
+          ),
+          text: '산출물',
         },
       ],
     },
