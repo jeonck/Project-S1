@@ -111,7 +111,7 @@ const Tasks = () => {
           <thead className="bg-blue-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                감리 유형
+                태스크 유형
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 프로젝트
@@ -203,7 +203,7 @@ const Tasks = () => {
           </div>
           <div className="mb-4">
             <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-              감리 유형
+              태스크 유형
             </label>
             <select
               id="name"
@@ -212,7 +212,7 @@ const Tasks = () => {
               className="w-full border border-gray-300 p-2 rounded-md focus:border-blue-600 focus:outline-none"
               required
             >
-              <option value="">감리 유형 선택</option>
+              <option value="">태스크 유형 선택</option>
               <option value="요구정의">요구정의</option>
               <option value="설계">설계</option>
               <option value="종료">종료</option>
