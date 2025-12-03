@@ -63,7 +63,7 @@ export const DataProvider = ({ children }) => {
 
   const initializeLocalStorage = () => {
     // 데이터 버전 관리 - 버전이 다르면 tasks를 재초기화
-    const DATA_VERSION = '2.0'; // 감리 유형으로 변경된 버전
+    const DATA_VERSION = '2.1'; // 상태 필드 완전히 분리된 버전
     const currentVersion = localStorage.getItem('dataVersion');
 
     if (currentVersion !== DATA_VERSION) {
