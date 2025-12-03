@@ -123,18 +123,18 @@ export const DataProvider = ({ children }) => {
 
     if (!localStorage.getItem('tasks')) {
       const initialTasks = [
-        { id: 1, name: '데이터베이스 설계', project: '프로젝트 A', dueDate: '2025-04-15', status: '설계', assignee: '고재환', description: '데이터베이스 스키마 및 ERD 설계' },
-        { id: 2, name: '프론트엔드 개발', project: '프로젝트 A', dueDate: '2025-07-20', status: '진단', assignee: '김기홍', description: 'React 기반 프론트엔드 개발' },
-        { id: 3, name: '앱 디자인', project: '프로젝트 B', dueDate: '2025-03-10', status: '요구정의', assignee: '김명현', description: '모바일 앱 UI/UX 디자인' },
-        { id: 4, name: '백엔드 API 개발', project: '프로젝트 A', dueDate: '2025-05-25', status: '설계', assignee: '김상협', description: 'REST API 개발 및 문서화' },
-        { id: 5, name: '사용자 테스트', project: '프로젝트 A', dueDate: '2025-08-15', status: '진단', assignee: '김선미', description: '실제 사용자를 대상으로 한 앱 테스트 진행' },
-        { id: 6, name: '마케팅 전략 수립', project: '프로젝트 B', dueDate: '2025-04-01', status: '종료', assignee: '김연식', description: '모바일 앱 출시를 위한 마케팅 전략 수립' },
-        { id: 7, name: '기능 개선', project: '프로젝트 A', dueDate: '2025-09-10', status: '요구정의', assignee: '김영빈', description: '사용자 피드백을 반영한 기능 개선' },
-        { id: 8, name: '앱 출시 준비', project: '프로젝트 B', dueDate: '2025-05-30', status: '진단', assignee: '김상현', description: '앱 스토어 등록 및 출시 업무 준비' },
-        { id: 9, name: '코드 리뷰', project: '프로젝트 A', dueDate: '2025-06-15', status: '요구정의', assignee: '고재환', description: '코드 품질 향상을 위한 코드 리뷰 진행' },
-        { id: 10, name: '사용자 인터뷰', project: '프로젝트 B', dueDate: '2025-02-20', status: '종료', assignee: '김명현', description: '사용자 요구사항 분석을 위한 인터뷰 진행' },
-        { id: 11, name: '성능 최적화', project: '프로젝트 A', dueDate: '2025-07-05', status: '요구정의', assignee: '김상협', description: '웹 서비스 성능 최적화 작업' },
-        { id: 12, name: '빌링 시스템 구현', project: '프로젝트 A', dueDate: '2025-08-01', status: '설계', assignee: '김기홍', description: '사용자 청구 및 결제 시스템 구현' }
+        { id: 1, name: '데이터베이스 스키마 설계', project: '프로젝트 A', dueDate: '2025-04-15', status: '설계', assignee: '고재환', description: '데이터베이스 스키마 및 ERD 설계' },
+        { id: 2, name: '프론트엔드 구현 검토', project: '프로젝트 A', dueDate: '2025-07-20', status: '진단', assignee: '김기홍', description: 'React 기반 프론트엔드 코드 품질 검토' },
+        { id: 3, name: 'UI/UX 요구사항 분석', project: '프로젝트 B', dueDate: '2025-03-10', status: '요구정의', assignee: '김명현', description: '모바일 앱 UI/UX 요구사항 정의' },
+        { id: 4, name: 'API 아키텍처 설계', project: '프로젝트 A', dueDate: '2025-05-25', status: '설계', assignee: '김상협', description: 'REST API 아키텍처 설계 및 문서화' },
+        { id: 5, name: '통합 테스트 수행', project: '프로젝트 A', dueDate: '2025-08-15', status: '진단', assignee: '김선미', description: '시스템 통합 테스트 및 품질 검증' },
+        { id: 6, name: '배포 계획 수립 완료', project: '프로젝트 B', dueDate: '2025-04-01', status: '종료', assignee: '김연식', description: '모바일 앱 배포 계획 수립 완료' },
+        { id: 7, name: '추가 기능 요구사항 정의', project: '프로젝트 A', dueDate: '2025-09-10', status: '요구정의', assignee: '김영빈', description: '사용자 피드백 기반 추가 기능 요구사항 정의' },
+        { id: 8, name: '운영 환경 검증', project: '프로젝트 B', dueDate: '2025-05-30', status: '진단', assignee: '김상현', description: '운영 환경 배포 전 최종 검증' },
+        { id: 9, name: '시스템 개선 요구사항 분석', project: '프로젝트 A', dueDate: '2025-06-15', status: '요구정의', assignee: '고재환', description: '시스템 개선을 위한 요구사항 분석' },
+        { id: 10, name: '사용자 요구사항 수집 완료', project: '프로젝트 B', dueDate: '2025-02-20', status: '종료', assignee: '김명현', description: '사용자 요구사항 수집 및 정리 완료' },
+        { id: 11, name: '성능 개선 요구사항 정의', project: '프로젝트 A', dueDate: '2025-07-05', status: '요구정의', assignee: '김상협', description: '시스템 성능 개선을 위한 요구사항 정의' },
+        { id: 12, name: '결제 시스템 설계', project: '프로젝트 A', dueDate: '2025-08-01', status: '설계', assignee: '김기홍', description: '결제 및 청구 시스템 아키텍처 설계' }
       ];
       localStorage.setItem('tasks', JSON.stringify(initialTasks));
     }
