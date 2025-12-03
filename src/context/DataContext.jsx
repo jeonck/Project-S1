@@ -63,7 +63,7 @@ export const DataProvider = ({ children }) => {
 
   const initializeLocalStorage = () => {
     // 데이터 버전 관리 - 버전이 다르면 tasks를 재초기화
-    const DATA_VERSION = '2.3'; // 새로운 상태 제거 및 마일스톤 연동 버전
+    const DATA_VERSION = '2.4'; // 프로젝트 감리 유형 추가
     const currentVersion = localStorage.getItem('dataVersion');
 
     if (currentVersion !== DATA_VERSION) {
@@ -77,14 +77,14 @@ export const DataProvider = ({ children }) => {
 
     if (!localStorage.getItem('projects')) {
       const initialProjects = [
-        { name: '프로젝트 A', dueDate: '2025-12-31', status: '진행중', description: '웹 애플리케이션 개발', assignee: '고재환' },
-        { name: '프로젝트 B', dueDate: '2025-06-30', status: '계획', description: '모바일 앱 런칭', assignee: '김기홍' },
-        { name: '프로젝트 C', dueDate: '2025-09-15', status: '진행중', description: '인공지능 분석 시스템 개발', assignee: '김명현' },
-        { name: '프로젝트 D', dueDate: '2026-02-28', status: '예정', description: '클라우드 서비스 플랫폼 구축', assignee: '김상협' },
-        { name: '프로젝트 E', dueDate: '2025-03-31', status: '완료', description: '사내 그룹웨어 마이그레이션', assignee: '고재환' },
-        { name: '프로젝트 F', dueDate: '2026-06-30', status: '계획', description: '새로운 서비스 런칭 준비', assignee: '김기홍' },
-        { name: '프로젝트 G', dueDate: '2026-08-31', status: '예정', description: '신규 고객사 온보딩', assignee: '고재환' },
-        { name: '프로젝트 H', dueDate: '2026-04-30', status: '계획', description: '기술 부채 해결', assignee: '최수석' }
+        { name: '프로젝트 A', dueDate: '2025-12-31', status: '진행중', description: '웹 애플리케이션 개발', assignee: '고재환', auditType: '설계' },
+        { name: '프로젝트 B', dueDate: '2025-06-30', status: '계획', description: '모바일 앱 런칭', assignee: '김기홍', auditType: '요구정의' },
+        { name: '프로젝트 C', dueDate: '2025-09-15', status: '진행중', description: '인공지능 분석 시스템 개발', assignee: '김명현', auditType: '설계' },
+        { name: '프로젝트 D', dueDate: '2026-02-28', status: '예정', description: '클라우드 서비스 플랫폼 구축', assignee: '김상협', auditType: '요구정의' },
+        { name: '프로젝트 E', dueDate: '2025-03-31', status: '완료', description: '사내 그룹웨어 마이그레이션', assignee: '고재환', auditType: '종료' },
+        { name: '프로젝트 F', dueDate: '2026-06-30', status: '계획', description: '새로운 서비스 런칭 준비', assignee: '김기홍', auditType: '요구정의' },
+        { name: '프로젝트 G', dueDate: '2026-08-31', status: '예정', description: '신규 고객사 온보딩', assignee: '고재환', auditType: '설계' },
+        { name: '프로젝트 H', dueDate: '2026-04-30', status: '계획', description: '기술 부채 해결', assignee: '최수석', auditType: '종료' }
       ].map(p => ({ ...p, startDate: getRandomStartDate(p.dueDate) }));
       localStorage.setItem('projects', JSON.stringify(initialProjects));
     }
