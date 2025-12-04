@@ -67,7 +67,7 @@ const TeamMembers = () => {
               <th className="px-5 py-3">이름</th>
               <th className="px-5 py-3">소속</th>
               <th className="px-5 py-3">직급</th>
-              <th className="px-5 py-3 text-center">액션</th>
+              <th className="px-5 py-3 text-center">편집</th>
             </tr>
           </thead>
           <tbody>
