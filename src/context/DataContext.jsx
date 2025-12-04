@@ -63,7 +63,7 @@ export const DataProvider = ({ children }) => {
 
   const initializeLocalStorage = () => {
     // 데이터 버전 관리 - 버전이 다르면 tasks를 재초기화
-    const DATA_VERSION = '2.8'; // 김수아 대표 추가 및 전체 팀원 목록 업데이트
+    const DATA_VERSION = '2.9'; // 소속을 '카미로'로 변경, 김수아 대표 제거
     const currentVersion = localStorage.getItem('dataVersion');
 
     if (currentVersion !== DATA_VERSION) {
@@ -163,40 +163,39 @@ export const DataProvider = ({ children }) => {
 
     if (!localStorage.getItem('teamMembers')) {
       const initialTeamMembers = [
-        { id: 'tm1', name: '김수아', department: '1카미노감리', role: '대표' },
-        { id: 'tm2', name: '고재환', department: '1카미노감리', role: '수석' },
-        { id: 'tm3', name: '김기홍', department: '1카미노감리', role: '수석' },
-        { id: 'tm4', name: '김연식', department: '1카미노감리', role: '수석' },
-        { id: 'tm5', name: '김영빈', department: '1카미노감리', role: '수석' },
-        { id: 'tm6', name: '김상협', department: '1카미노감리', role: '수석' },
-        { id: 'tm7', name: '김선미', department: '1카미노감리', role: '수석' },
-        { id: 'tm8', name: '최수석', department: '1카미노감리', role: '수석' },
-        { id: 'tm9', name: '김명현', department: '1카미노감리', role: '일반' },
-        { id: 'tm10', name: '김상현', department: '1카미노감리', role: '일반' },
-        { id: 'tm11', name: '이상인', department: '1카미노감리', role: '일반' },
-        { id: 'tm12', name: '강희태', department: '1카미노감리', role: '일반' },
-        { id: 'tm13', name: '김다정', department: '1카미노감리', role: '일반' },
-        { id: 'tm14', name: '김종우', department: '1카미노감리', role: '일반' },
-        { id: 'tm15', name: '박강효', department: '1카미노감리', role: '일반' },
-        { id: 'tm16', name: '박규효', department: '1카미노감리', role: '일반' },
-        { id: 'tm17', name: '박다솜', department: '1카미노감리', role: '일반' },
-        { id: 'tm18', name: '박세현', department: '1카미노감리', role: '일반' },
-        { id: 'tm19', name: '박용진', department: '1카미노감리', role: '일반' },
-        { id: 'tm20', name: '변원규', department: '1카미노감리', role: '일반' },
-        { id: 'tm21', name: '서동린', department: '1카미노감리', role: '일반' },
-        { id: 'tm22', name: '서우석', department: '1카미노감리', role: '일반' },
-        { id: 'tm23', name: '유순학', department: '1카미노감리', role: '일반' },
-        { id: 'tm24', name: '윤석원', department: '1카미노감리', role: '일반' },
-        { id: 'tm25', name: '이용준', department: '1카미노감리', role: '일반' },
-        { id: 'tm26', name: '이종명', department: '1카미노감리', role: '일반' },
-        { id: 'tm27', name: '이철희', department: '1카미노감리', role: '일반' },
-        { id: 'tm28', name: '임소영', department: '1카미노감리', role: '일반' },
-        { id: 'tm29', name: '전창국', department: '1카미노감리', role: '일반' },
-        { id: 'tm30', name: '조길제', department: '1카미노감리', role: '일반' },
-        { id: 'tm31', name: '최윤경', department: '1카미노감리', role: '일반' },
-        { id: 'tm32', name: '최학원', department: '1카미노감리', role: '일반' },
-        { id: 'tm33', name: '허상무', department: '1카미노감리', role: '일반' },
-        { id: 'tm34', name: '황용철', department: '1카미노감리', role: '일반' },
+        { id: 'tm1', name: '고재환', department: '카미로', role: '수석' },
+        { id: 'tm2', name: '김기홍', department: '카미로', role: '수석' },
+        { id: 'tm3', name: '김연식', department: '카미로', role: '수석' },
+        { id: 'tm4', name: '김영빈', department: '카미로', role: '수석' },
+        { id: 'tm5', name: '김상협', department: '카미로', role: '수석' },
+        { id: 'tm6', name: '김선미', department: '카미로', role: '수석' },
+        { id: 'tm7', name: '최수석', department: '카미로', role: '수석' },
+        { id: 'tm8', name: '김명현', department: '카미로', role: '일반' },
+        { id: 'tm9', name: '김상현', department: '카미로', role: '일반' },
+        { id: 'tm10', name: '이상인', department: '카미로', role: '일반' },
+        { id: 'tm11', name: '강희태', department: '카미로', role: '일반' },
+        { id: 'tm12', name: '김다정', department: '카미로', role: '일반' },
+        { id: 'tm13', name: '김종우', department: '카미로', role: '일반' },
+        { id: 'tm14', name: '박강효', department: '카미로', role: '일반' },
+        { id: 'tm15', name: '박규효', department: '카미로', role: '일반' },
+        { id: 'tm16', name: '박다솜', department: '카미로', role: '일반' },
+        { id: 'tm17', name: '박세현', department: '카미로', role: '일반' },
+        { id: 'tm18', name: '박용진', department: '카미로', role: '일반' },
+        { id: 'tm19', name: '변원규', department: '카미로', role: '일반' },
+        { id: 'tm20', name: '서동린', department: '카미로', role: '일반' },
+        { id: 'tm21', name: '서우석', department: '카미로', role: '일반' },
+        { id: 'tm22', name: '유순학', department: '카미로', role: '일반' },
+        { id: 'tm23', name: '윤석원', department: '카미로', role: '일반' },
+        { id: 'tm24', name: '이용준', department: '카미로', role: '일반' },
+        { id: 'tm25', name: '이종명', department: '카미로', role: '일반' },
+        { id: 'tm26', name: '이철희', department: '카미로', role: '일반' },
+        { id: 'tm27', name: '임소영', department: '카미로', role: '일반' },
+        { id: 'tm28', name: '전창국', department: '카미로', role: '일반' },
+        { id: 'tm29', name: '조길제', department: '카미로', role: '일반' },
+        { id: 'tm30', name: '최윤경', department: '카미로', role: '일반' },
+        { id: 'tm31', name: '최학원', department: '카미로', role: '일반' },
+        { id: 'tm32', name: '허상무', department: '카미로', role: '일반' },
+        { id: 'tm33', name: '황용철', department: '카미로', role: '일반' },
       ];
       localStorage.setItem('teamMembers', JSON.stringify(initialTeamMembers));
     }
