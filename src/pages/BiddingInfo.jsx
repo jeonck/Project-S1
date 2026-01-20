@@ -32,7 +32,10 @@ const BiddingInfo = () => {
   };
 
   const API_KEY = import.meta.env.VITE_PROCUREMENT_API_KEY;
-  const BASE_URL = '/api/bid/1230000/ad/BidPublicInfoService';
+  // 개발환경: 프록시 사용, 프로덕션: 직접 호출
+  const BASE_URL = import.meta.env.DEV
+    ? '/api/bid/1230000/ad/BidPublicInfoService'
+    : 'https://apis.data.go.kr/1230000/ad/BidPublicInfoService';
   const ENDPOINT = '/getBidPblancListInfoServcPPSSrch';
 
   useEffect(() => {
