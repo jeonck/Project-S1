@@ -137,6 +137,14 @@ const BiddingInfo = () => {
     });
   };
 
+  // 금액 포맷팅 (천 단위 콤마)
+  const formatPrice = (price) => {
+    if (!price) return '-';
+    const num = parseInt(price);
+    if (isNaN(num)) return '-';
+    return num.toLocaleString('ko-KR') + '원';
+  };
+
   const formatDate = (dateString) => {
     if (!dateString) return '-';
     try {
@@ -250,6 +258,9 @@ const BiddingInfo = () => {
                   <th className="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-36">
                     게시일시<br/>(입찰마감일시)
                   </th>
+                  <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
+                    추정가격
+                  </th>
                   <th className="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-24">
                     단계
                   </th>
@@ -305,6 +316,9 @@ const BiddingInfo = () => {
                             ({formatDate(item.bidClseDt)})
                           </div>
                         </td>
+                        <td className="px-3 py-4 text-right text-sm text-gray-900">
+                          {formatPrice(item.presmptPrce)}
+                        </td>
                         <td className="px-3 py-4 text-center text-sm">
                           <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                             getBiddingStage(item) === '입찰중' ? 'bg-green-100 text-green-800' :
@@ -324,7 +338,7 @@ const BiddingInfo = () => {
                   })
                 ) : (
                   <tr>
-                    <td colSpan="10" className="px-6 py-8 text-center text-gray-500">
+                    <td colSpan="11" className="px-6 py-8 text-center text-gray-500">
                       입찰정보가 없습니다.
                     </td>
                   </tr>
