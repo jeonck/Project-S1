@@ -189,18 +189,58 @@ const BiddingInfo = () => {
     return '마감';
   };
 
-  // 입찰진행 요약
+  // 날짜 문자열을 Date 객체로 변환
+  const parseDateTime = (dateString) => {
+    if (!dateString) return null;
+    // "2025-12-26 10:00:00" 형식 처리
+    if (dateString.includes('-')) {
+      return new Date(dateString.replace(' ', 'T'));
+    }
+    // "202512261000" 형식 처리
+    if (dateString.length >= 12) {
+      const year = dateString.substring(0, 4);
+      const month = dateString.substring(4, 6);
+      const day = dateString.substring(6, 8);
+      const hour = dateString.substring(8, 10);
+      const min = dateString.substring(10, 12);
+      return new Date(`${year}-${month}-${day}T${hour}:${min}:00`);
+    }
+    return null;
+  };
+
+  // 입찰진행 요약 (D-day 계산)
   const getBiddingSummary = (item) => {
     const stage = getBiddingStage(item);
+    const now = new Date();
 
-    if (stage === '입찰중') {
-      const bidClose = new Date(item.bidClseDt);
-      const now = new Date();
-      const daysLeft = Math.ceil((bidClose - now) / (1000 * 60 * 60 * 24));
-      return `D-${daysLeft}`;
+    const calcDday = (targetDate) => {
+      if (!targetDate) return null;
+      const diff = targetDate - now;
+      const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+      if (days > 0) return `D-${days}`;
+      if (days === 0) return 'D-Day';
+      return `D+${Math.abs(days)}`;
+    };
+
+    if (stage === '입찰예정') {
+      const bidBegin = parseDateTime(item.bidBeginDt);
+      const dday = calcDday(bidBegin);
+      return dday ? `시작 ${dday}` : '-';
     }
 
-    return '-';
+    if (stage === '입찰중') {
+      const bidClose = parseDateTime(item.bidClseDt);
+      const dday = calcDday(bidClose);
+      return dday ? `마감 ${dday}` : '-';
+    }
+
+    if (stage === '마감') {
+      const opening = parseDateTime(item.opengDt);
+      const dday = calcDday(opening);
+      return dday ? `개찰 ${dday}` : '-';
+    }
+
+    return '완료';
   };
 
   return (
