@@ -12,28 +12,28 @@ const BiddingInfo = () => {
     inqryEndDt: '' // YYYYMMDDHHMM 형식
   });
 
-  // 기본 조회 기간 설정 (최근 30일)
+  // 기본 조회 기간 설정 (과거 30일 ~ 오늘)
   const getDefaultDateRange = () => {
     const now = new Date();
-    const endDate = now;
     const startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000); // 30일 전
+    const endDate = now;
 
-    const formatDateTime = (date) => {
+    const formatDate = (date, isEnd = false) => {
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const day = String(date.getDate()).padStart(2, '0');
-      return `${year}${month}${day}0000`;
+      return `${year}${month}${day}${isEnd ? '2359' : '0000'}`;
     };
 
     return {
-      inqryBgnDt: formatDateTime(startDate),
-      inqryEndDt: formatDateTime(endDate)
+      inqryBgnDt: formatDate(startDate, false),
+      inqryEndDt: formatDate(endDate, true)
     };
   };
 
-  const API_KEY = 'REDACTED_API_KEY';
-  const BASE_URL = 'https://apis.data.go.kr/1230000/ad/BidPublicInfoService';
-  const ENDPOINT = '/getBidPblancListInfoServc';
+  const API_KEY = import.meta.env.VITE_PROCUREMENT_API_KEY;
+  const BASE_URL = '/api/bid/1230000/ad/BidPublicInfoService';
+  const ENDPOINT = '/getBidPblancListInfoServcPPSSrch';
 
   useEffect(() => {
     // 초기 날짜 범위 설정
@@ -50,112 +50,33 @@ const BiddingInfo = () => {
     }
   }, [searchParams.pageNo, searchParams.inqryBgnDt, searchParams.inqryEndDt]);
 
-  // XML 파싱 함수
-  const parseXML = (xmlString) => {
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(xmlString, 'text/xml');
+  // JSON 파싱 함수
+  const parseJSON = (data) => {
+    try {
+      const response = data?.response;
+      if (!response) {
+        return { success: false, message: '응답 데이터가 없습니다.' };
+      }
 
-    const getTextContent = (element, tagName) => {
-      const el = element.getElementsByTagName(tagName)[0];
-      return el ? el.textContent : '';
-    };
+      const header = response.header;
+      if (header?.resultCode !== '00') {
+        return { success: false, message: header?.resultMsg || '데이터를 불러오는데 실패했습니다.' };
+      }
 
-    const resultCode = getTextContent(xmlDoc, 'resultCode');
-    const resultMsg = getTextContent(xmlDoc, 'resultMsg');
+      const body = response.body;
+      let items = body?.items || [];
 
-    if (resultCode !== '00') {
-      return { success: false, message: resultMsg || '데이터를 불러오는데 실패했습니다.' };
+      // items가 배열이 아니면 배열로 변환
+      if (!Array.isArray(items)) {
+        items = items ? [items] : [];
+      }
+
+      const totalCount = body?.totalCount || 0;
+      return { success: true, items, totalCount };
+    } catch (err) {
+      console.error('JSON 파싱 오류:', err);
+      return { success: false, message: 'JSON 파싱 중 오류가 발생했습니다.' };
     }
-
-    const items = [];
-    const itemElements = xmlDoc.getElementsByTagName('item');
-
-    for (let i = 0; i < itemElements.length; i++) {
-      const item = itemElements[i];
-
-      const itemData = {
-        bidNtceNo: getTextContent(item, 'bidNtceNo'),
-        bidNtceOrd: getTextContent(item, 'bidNtceOrd'),
-        reNtceYn: getTextContent(item, 'reNtceYn'),
-        rgstTyNm: getTextContent(item, 'rgstTyNm'),
-        ntceKindNm: getTextContent(item, 'ntceKindNm'),
-        intrbidYn: getTextContent(item, 'intrbidYn'),
-        bidNtceDt: getTextContent(item, 'bidNtceDt'),
-        refNo: getTextContent(item, 'refNo'),
-        bidNtceNm: getTextContent(item, 'bidNtceNm'),
-        ntceInsttCd: getTextContent(item, 'ntceInsttCd'),
-        ntceInsttNm: getTextContent(item, 'ntceInsttNm'),
-        dminsttCd: getTextContent(item, 'dminsttCd'),
-        dminsttNm: getTextContent(item, 'dminsttNm'),
-        bidMethdNm: getTextContent(item, 'bidMethdNm'),
-        cntrctCnclsMthdNm: getTextContent(item, 'cntrctCnclsMthdNm'),
-        ntceInsttOfclNm: getTextContent(item, 'ntceInsttOfclNm'),
-        ntceInsttOfclTelNo: getTextContent(item, 'ntceInsttOfclTelNo'),
-        ntceInsttOfclEmailAdrs: getTextContent(item, 'ntceInsttOfclEmailAdrs'),
-        exctvNm: getTextContent(item, 'exctvNm'),
-        bidQlfctRgstDt: getTextContent(item, 'bidQlfctRgstDt'),
-        cmmnSpldmdAgrmntRcptdocMethd: getTextContent(item, 'cmmnSpldmdAgrmntRcptdocMethd'),
-        cmmnSpldmdAgrmntClseDt: getTextContent(item, 'cmmnSpldmdAgrmntClseDt'),
-        cmmnSpldmdCorpRgnLmtYn: getTextContent(item, 'cmmnSpldmdCorpRgnLmtYn'),
-        bidBeginDt: getTextContent(item, 'bidBeginDt'),
-        bidClseDt: getTextContent(item, 'bidClseDt'),
-        opengDt: getTextContent(item, 'opengDt'),
-        asignBdgtAmt: getTextContent(item, 'asignBdgtAmt'),
-        presmptPrce: getTextContent(item, 'presmptPrce'),
-        opengPlce: getTextContent(item, 'opengPlce'),
-        dcmtgOprtnDt: getTextContent(item, 'dcmtgOprtnDt'),
-        dcmtgOprtnPlce: getTextContent(item, 'dcmtgOprtnPlce'),
-        bidNtceDtlUrl: getTextContent(item, 'bidNtceDtlUrl'),
-        bidNtceUrl: getTextContent(item, 'bidNtceUrl'),
-        bidPrtcptFeePaymntYn: getTextContent(item, 'bidPrtcptFeePaymntYn'),
-        bidPrtcptFee: getTextContent(item, 'bidPrtcptFee'),
-        bidGrntymnyPaymntYn: getTextContent(item, 'bidGrntymnyPaymntYn'),
-        crdtrNm: getTextContent(item, 'crdtrNm'),
-        ppswGnrlSrvceYn: getTextContent(item, 'ppswGnrlSrvceYn'),
-        srvceDivNm: getTextContent(item, 'srvceDivNm'),
-        prdctClsfcLmtYn: getTextContent(item, 'prdctClsfcLmtYn'),
-        mnfctYn: getTextContent(item, 'mnfctYn'),
-        purchsObjPrdctList: getTextContent(item, 'purchsObjPrdctList'),
-        untyNtceNo: getTextContent(item, 'untyNtceNo'),
-        cmmnSpldmdMethdCd: getTextContent(item, 'cmmnSpldmdMethdCd'),
-        cmmnSpldmdMethdNm: getTextContent(item, 'cmmnSpldmdMethdNm'),
-        stdNtceDocUrl: getTextContent(item, 'stdNtceDocUrl'),
-        brffcBidprcPermsnYn: getTextContent(item, 'brffcBidprcPermsnYn'),
-        dsgntCmptYn: getTextContent(item, 'dsgntCmptYn'),
-        arsltCmptYn: getTextContent(item, 'arsltCmptYn'),
-        pqEvalYn: getTextContent(item, 'pqEvalYn'),
-        tpEvalYn: getTextContent(item, 'tpEvalYn'),
-        ntceDscrptYn: getTextContent(item, 'ntceDscrptYn'),
-        rsrvtnPrceReMkngMthdNm: getTextContent(item, 'rsrvtnPrceReMkngMthdNm'),
-        arsltApplDocRcptMthdNm: getTextContent(item, 'arsltApplDocRcptMthdNm'),
-        arsltReqstdocRcptDt: getTextContent(item, 'arsltReqstdocRcptDt'),
-        orderPlanUntyNo: getTextContent(item, 'orderPlanUntyNo'),
-        sucsfbidLwltRate: getTextContent(item, 'sucsfbidLwltRate'),
-        rgstDt: getTextContent(item, 'rgstDt'),
-        bfSpecRgstNo: getTextContent(item, 'bfSpecRgstNo'),
-        infoBizYn: getTextContent(item, 'infoBizYn'),
-        sucsfbidMthdCd: getTextContent(item, 'sucsfbidMthdCd'),
-        sucsfbidMthdNm: getTextContent(item, 'sucsfbidMthdNm'),
-        chgDt: getTextContent(item, 'chgDt'),
-        dminsttOfclEmailAdrs: getTextContent(item, 'dminsttOfclEmailAdrs'),
-        indstrytyLmtYn: getTextContent(item, 'indstrytyLmtYn'),
-        chgNtceRsn: getTextContent(item, 'chgNtceRsn'),
-        rbidOpengDt: getTextContent(item, 'rbidOpengDt'),
-        VAT: getTextContent(item, 'VAT'),
-        indutyVAT: getTextContent(item, 'indutyVAT'),
-        pubPrcrmntLrgClsfcNm: getTextContent(item, 'pubPrcrmntLrgClsfcNm'),
-        pubPrcrmntMidClsfcNm: getTextContent(item, 'pubPrcrmntMidClsfcNm'),
-        pubPrcrmntClsfcNo: getTextContent(item, 'pubPrcrmntClsfcNo'),
-        pubPrcrmntClsfcNm: getTextContent(item, 'pubPrcrmntClsfcNm')
-      };
-
-      items.push(itemData);
-    }
-
-    const totalCount = getTextContent(xmlDoc, 'totalCount');
-    const numOfRows = getTextContent(xmlDoc, 'numOfRows');
-
-    return { success: true, items, totalCount, numOfRows };
   };
 
   const fetchBiddingData = async () => {
@@ -164,15 +85,17 @@ const BiddingInfo = () => {
 
     try {
       const params = new URLSearchParams({
-        ServiceKey: API_KEY,
         numOfRows: searchParams.numOfRows,
         pageNo: searchParams.pageNo,
         inqryDiv: searchParams.inqryDiv,
         inqryBgnDt: searchParams.inqryBgnDt,
-        inqryEndDt: searchParams.inqryEndDt
+        inqryEndDt: searchParams.inqryEndDt,
+        indstrytyCd: '6146',
+        type: 'json'
       });
 
-      const url = `${BASE_URL}${ENDPOINT}?${params}`;
+      // API 키는 이미 인코딩되어 있으므로 직접 추가
+      const url = `${BASE_URL}${ENDPOINT}?serviceKey=${encodeURIComponent(API_KEY)}&${params}`;
       console.log('API 요청 URL:', url);
 
       const response = await fetch(url);
@@ -181,10 +104,10 @@ const BiddingInfo = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const xmlText = await response.text();
-      console.log('API 응답 (XML):', xmlText.substring(0, 500));
+      const data = await response.json();
+      console.log('API 응답 (JSON):', data);
 
-      const result = parseXML(xmlText);
+      const result = parseJSON(data);
 
       if (result.success) {
         setBiddingData(result.items || []);
