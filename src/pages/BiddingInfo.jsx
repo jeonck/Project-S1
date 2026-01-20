@@ -215,11 +215,15 @@ const BiddingInfo = () => {
 
     const calcDday = (targetDate) => {
       if (!targetDate) return null;
-      const diff = targetDate - now;
-      const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
-      if (days > 0) return `D-${days}`;
-      if (days === 0) return 'D-Day';
-      return `D+${Math.abs(days)}`;
+
+      // 날짜만 비교 (시간 제외)
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const target = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate());
+      const diffDays = Math.round((target - today) / (1000 * 60 * 60 * 24));
+
+      if (diffDays > 0) return `D-${diffDays}`;
+      if (diffDays === 0) return 'D-Day';
+      return `D+${Math.abs(diffDays)}`;
     };
 
     if (stage === '입찰예정') {
