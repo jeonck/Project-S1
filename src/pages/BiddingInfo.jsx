@@ -172,23 +172,6 @@ const BiddingInfo = () => {
     }
   };
 
-  // 입찰진행 단계 계산
-  const getBiddingStage = (item) => {
-    const now = new Date();
-    const bidBegin = item.bidBeginDt ? new Date(item.bidBeginDt) : null;
-    const bidClose = item.bidClseDt ? new Date(item.bidClseDt) : null;
-    const opening = item.opengDt ? new Date(item.opengDt) : null;
-
-    if (!bidBegin || !bidClose) return '정보없음';
-
-    if (now < bidBegin) return '입찰예정';
-    if (now >= bidBegin && now < bidClose) return '입찰중';
-    if (now >= bidClose && opening && now < opening) return '마감';
-    if (opening && now >= opening) return '개찰완료';
-
-    return '마감';
-  };
-
   // 날짜 문자열을 Date 객체로 변환
   const parseDateTime = (dateString) => {
     if (!dateString) return null;
@@ -206,6 +189,23 @@ const BiddingInfo = () => {
       return new Date(`${year}-${month}-${day}T${hour}:${min}:00`);
     }
     return null;
+  };
+
+  // 입찰진행 단계 계산
+  const getBiddingStage = (item) => {
+    const now = new Date();
+    const bidBegin = parseDateTime(item.bidBeginDt);
+    const bidClose = parseDateTime(item.bidClseDt);
+    const opening = parseDateTime(item.opengDt);
+
+    if (!bidBegin || !bidClose) return '정보없음';
+
+    if (now < bidBegin) return '입찰예정';
+    if (now >= bidBegin && now < bidClose) return '입찰중';
+    if (now >= bidClose && opening && now < opening) return '마감';
+    if (opening && now >= opening) return '개찰완료';
+
+    return '마감';
   };
 
   // 입찰진행 요약 (D-day 계산)
