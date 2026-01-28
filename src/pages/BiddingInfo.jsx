@@ -5,7 +5,7 @@ const BiddingInfo = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [searchParams, setSearchParams] = useState({
-    numOfRows: '10',
+    numOfRows: '30',
     pageNo: '1',
     inqryDiv: '1', // 1: 등록일시, 2: 입찰공고번호, 3: 변경일시
     inqryBgnDt: '', // YYYYMMDDHHMM 형식
@@ -113,8 +113,16 @@ const BiddingInfo = () => {
       const result = parseJSON(data);
 
       if (result.success) {
-        setBiddingData(result.items || []);
-        console.log('파싱된 데이터:', result.items);
+        const sortedItems = [...(result.items || [])].sort((a, b) => {
+          const dateA = parseDateTime(a.bidNtceDt);
+          const dateB = parseDateTime(b.bidNtceDt);
+          if (!dateA && !dateB) return 0;
+          if (!dateA) return 1;
+          if (!dateB) return -1;
+          return dateB - dateA; // 내림차순 (최신순)
+        });
+        setBiddingData(sortedItems);
+        console.log('파싱된 데이터 (게시일시 내림차순):', sortedItems);
       } else {
         setError(result.message);
         setBiddingData([]);
@@ -126,15 +134,6 @@ const BiddingInfo = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handlePageChange = (direction) => {
-    const currentPage = parseInt(searchParams.pageNo);
-    const newPage = direction === 'next' ? currentPage + 1 : Math.max(1, currentPage - 1);
-    setSearchParams({
-      ...searchParams,
-      pageNo: String(newPage)
-    });
   };
 
   // 금액 포맷팅 (천 단위 콤마)
@@ -391,50 +390,6 @@ const BiddingInfo = () => {
             </table>
           </div>
 
-          {/* 페이지네이션 */}
-          {biddingData.length > 0 && (
-            <div className="bg-gray-50 px-6 py-4 flex items-center justify-between border-t border-gray-200">
-              <div className="flex-1 flex justify-between sm:hidden">
-                <button
-                  onClick={() => handlePageChange('prev')}
-                  disabled={searchParams.pageNo === '1'}
-                  className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  이전
-                </button>
-                <button
-                  onClick={() => handlePageChange('next')}
-                  className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-                >
-                  다음
-                </button>
-              </div>
-              <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-                <div>
-                  <p className="text-sm text-gray-700">
-                    페이지 <span className="font-medium">{searchParams.pageNo}</span>
-                  </p>
-                </div>
-                <div>
-                  <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                    <button
-                      onClick={() => handlePageChange('prev')}
-                      disabled={searchParams.pageNo === '1'}
-                      className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      이전
-                    </button>
-                    <button
-                      onClick={() => handlePageChange('next')}
-                      className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-                    >
-                      다음
-                    </button>
-                  </nav>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       )}
     </div>
